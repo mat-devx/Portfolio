@@ -1,0 +1,186 @@
+:root{
+	--bg: #06090a;
+	--muted: #9aa3ab;
+	--accent: #ffc107; /* yellow */
+	--accent-2: #ffd24d;
+	--green: #3be27a;
+	--card: #0f1416;
+	--glass: rgba(255,255,255,0.03);
+	--max-width: 1100px;
+	--portrait-size: 320px; /* default desktop portrait size */
+}
+
+/* Basic reset */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+	margin: 0;
+	font-family: Poppins, Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+	background: var(--bg);
+	color: #e6eef6;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Portrait / hero image defaults (desktop-first) */
+.portrait {
+	width: var(--portrait-size);
+	height: var(--portrait-size);
+	border-radius: 18px;
+	position: relative;
+	display: inline-block;
+	--portrait-accent: linear-gradient(135deg, rgba(255,192,60,0.12), rgba(59,226,122,0.06));
+	background: var(--portrait-accent), linear-gradient(180deg,#0b0f12,#050608);
+	box-shadow: 0 18px 40px rgba(2,6,8,0.65), inset 0 1px 0 rgba(255,255,255,0.02);
+	border: 1px solid rgba(255,255,255,0.035);
+	overflow: hidden;
+	transform: translateZ(0);
+	animation: float 6s ease-in-out infinite;
+}
+
+.portrait img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	filter: grayscale(0) contrast(1.02) saturate(1.04);
+	transition: transform 420ms cubic-bezier(.2,.9,.2,1), filter 420ms ease;
+}
+
+.portrait:hover img, .portrait:focus-within img {
+	transform: scale(1.03) translateY(-4px);
+	filter: grayscale(0) contrast(1.03) saturate(1);
+}
+
+.portrait-ring{
+	position: absolute;
+	left: 50%; top: 50%; transform: translate(-50%,-50%);
+	width: calc(var(--portrait-size) + 36px);
+	height: calc(var(--portrait-size) + 36px);
+	border-radius: 22px;
+	pointer-events: none;
+	background: conic-gradient(from 90deg at 50% 50%, rgba(255,255,255,0.03), rgba(255,255,255,0) 40%, rgba(59,226,122,0.06) 60%);
+	mix-blend-mode: overlay;
+	opacity: 0.9;
+	filter: blur(10px);
+	transition: transform 420ms ease, opacity 420ms ease;
+}
+
+.portrait:hover .portrait-ring, .portrait:focus-within .portrait-ring{
+	transform: translate(-50%,-50%) scale(1.03);
+	opacity: 1;
+}
+
+@keyframes float { 0% { transform: translateY(0) } 50% { transform: translateY(-8px) } 100% { transform: translateY(0) } }
+
+.container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+.site-header { position: sticky; top: 0; z-index: 30; background: transparent; padding: 20px 0; }
+.header-inner { display:flex; align-items:center; justify-content:space-between }
+.brand { font-weight:700; color: var(--accent); letter-spacing: 0.4px }
+.site-nav { display:flex; align-items:center }
+.site-nav a { color: var(--muted); text-decoration:none; margin-left:22px; font-weight:600 }
+.site-nav a.btn-outline { border:1px solid rgba(255,255,255,0.06); padding:8px 12px; border-radius:6px }
+
+.nav-toggle { display: none; background: transparent; border:0; color:var(--muted); font-size:22px }
+.mobile-nav { display:none; position:absolute; top:72px; right:18px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); backdrop-filter: blur(6px); padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.03) }
+.mobile-nav a { display:block; color:var(--muted); padding:8px 10px; text-decoration:none }
+
+/* HERO - desktop-first layout */
+.hero { padding: 80px 0 120px; min-height: 80vh; }
+.hero-inner { display:flex; gap:48px; align-items:stretch }
+.hero-left { flex: 0 0 45%; max-width:45%; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; text-align:left; padding:40px 0 40px 8px }
+.hero-right { flex: 0 0 55%; max-width:55%; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden }
+
+/* full-bleed seamless hero image defaults */
+.hero-image {
+	width:100%; height:100%; display:block; object-fit:cover; object-position:center center;
+	border-radius:0 !important; box-shadow:none !important; border:0 !important; mix-blend-mode: normal;
+}
+
+.hero-right { align-self: stretch }
+.hero-right .hero-image { height:auto; max-width:100%; max-height:100%; display:block }
+
+/* On large screens prefer contain so the portrait is fully visible */
+@media (min-width: 1200px) {
+	.hero-image { object-fit: contain; }
+}
+
+.greeting { font-size:25px; line-height:1.05; margin:0 0 10px; color:#dbe7ef; font-weight:700; letter-spacing:-0.2px }
+.name { color: var(--accent); margin-left:5px  }
+.name-last { color: var(--accent); font-weight:800 }
+.subtitle { color: var(--muted); margin:0 0 15px; font-size:15px }
+
+.code-line { display:inline-flex; align-items:center; gap:8px; margin:18px 0 26px; font-family:monospace; color:var(--green); font-weight:600 }
+.code-prefix, .code-suffix { opacity:0.8 }
+.typing { min-width:160px; display:inline-block }
+
+.cta-row { display:flex; gap:12px; margin-top:8px }
+.btn-primary { background: var(--accent); color:#081019; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:700 }
+.btn-ghost { color: #7a0066; text-decoration:none;  padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:700  solid rgba(255,255,255,0.04) }
+
+/* Portrait cutout variant (desktop) */
+ 
+@media (min-width:1400px) {
+	.portrait img.cutout { right:-12%; width:78%; top:4%; }
+}
+
+/* small caret animation for typing */
+.typing::after { content: ' '; display:inline-block; width:8px; height:20px; background:var(--green); margin-left:6px; vertical-align:middle; animation: blink 1s steps(2) infinite }
+@keyframes blink { 50% { opacity:0 } }
+
+/* Dock styles */
+.dock { display:flex; align-items:center; justify-content:center; gap:12px; height:54px; padding:8px 14px; border-radius:999px; background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); box-shadow: 0 8px 20px rgba(2,6,8,0.5); transition: transform 360ms cubic-bezier(.2,.9,.2,1), box-shadow 360ms, opacity 360ms; position:relative }
+.dock .dock-icon { width:44px; height:44px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center; background:transparent; border:0; color:var(--muted); transition: transform .22s cubic-bezier(.2,.9,.2,1), background .2s, color .2s }
+.dock .dock-icon svg { width:18px; height:18px }
+.dock .dock-icon:hover { background:var(--glass); color:var(--accent); transform: translateY(-4px) scale(1.03) }
+.dock .tooltip { position:absolute; bottom:120%; left:50%; transform:translateX(-50%); background:rgba(2,6,8,0.92); color:#fff; padding:6px 8px; border-radius:6px; font-size:12px; white-space:nowrap; opacity:0; visibility:hidden; transition:opacity .15s, transform .15s }
+.dock .dock-icon:hover .tooltip { opacity:1; visibility:visible; transform:translateX(-50%) translateY(-6px) }
+
+/* Scroll animation states */
+.dock.is-hidden { transform: translateY(18px) scale(.98); opacity:0; pointer-events:none }
+.dock.is-visible { transform: translateY(0) scale(1); opacity:1; pointer-events:auto }
+.dock.pop { transform: translateY(-6px) scale(1.03); box-shadow: 0 18px 36px rgba(2,6,8,0.6) }
+
+/* smaller icon sizes on narrow screens */
+@media (max-width: 720px) {
+	.dock { height:44px; gap:8px; padding:6px 10px }
+	.dock .dock-icon { width:36px; height:36px }
+	.dock .dock-icon svg { width:16px; height:16px }
+}
+
+
+@media (max-width: 1200px) {
+	:root { --portrait-size: 260px; }
+}
+
+/* Responsive adjustments (desktop-first: use max-width for smaller screens) */
+@media (max-width: 900px) {
+	.hero-inner { flex-direction: column-reverse; align-items: flex-start; gap: 20px }
+	.hero-right { width:100%; display:block }
+	.portrait { width:260px; height:260px; margin-bottom:20px }
+	.hero-image { object-fit: cover; height:260px; width:100%; max-height:none }
+	.greeting { font-size:30px }
+	.portrait img.cutout { position: static; width:100%; height:260px; object-fit:cover; border-radius:8px; mix-blend-mode:none; filter:none }
+}
+
+@media (max-width: 720px) {
+	.dock { height:40px }
+	.dock .dock-icon { width:32px; height:32px }
+	.dock .dock-icon svg { width:14px; height:14px }
+}
+
+@media (max-width: 520px) {
+	.greeting { font-size:22px }
+	.subtitle { font-size:15px }
+	.container { padding: 0 14px }
+	.hero { padding: 40px 0 80px }
+	.nav-toggle { display:block }
+	.site-nav { display:none }
+	.mobile-nav { right:14px }
+	.cta-row { flex-direction: column; align-items: stretch }
+	.btn-primary, .btn-ghost { width:100%; text-align:center }
+}
+
+.muted { color: var(--muted) }
+

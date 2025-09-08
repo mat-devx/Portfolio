@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mathew Valiente — Portfolio</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Using Poppins to better match the attached design -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+  <!-- Dock styles moved to style.css -->
+  </head>
+  <body>
+    <!-- Header: replaced with Dock (keeps original site structure) -->
+  <header class="site-header" role="banner">
+      
+  </header>
+
+    <main class="hero">
+      <div class="container hero-inner">
+        <div class="hero-left">
+          <h1 class="greeting">
+            Hey, I'm
+            <span class="name" style="font-size: 35px;">
+              Mathew <span class="name-last">Valiente</span></span
+            >
+          </h1>
+          <p class="subtitle">
+            Junior Web Developer focused on building skills in Software
+            Engineering, while aspiring to specialize in AI and next-generation
+            technologies.
+          </p>
+
+          <div class="code-line" aria-hidden="true">
+            <span class="code-prefix">&lt;</span>
+            <span id="typing" class="typing"></span>
+            <span class="code-suffix">/&gt;</span>
+          </div>
+
+          <div class="cta-row">
+            <a class="btn-primary" href="#contact">Hire Me</a>
+            <a class="btn-ghost" href="#resume">Download Resume</a>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <img class="hero-image" src="mathew.png" alt="Portrait of Mathew Valiente" aria-hidden="false" />
+        </div>
+  </div>
+    </main>
+
+    <!-- Dock JS moved to animation.js -->
+
+    <!-- simplified center dock: only Skills, Portfolio (GitHub) and Contact (email) -->
+    <div style="display:flex;justify-content:center;padding:12px 0;background:transparent">
+      <nav class="dock" id="dock" aria-label="Site quick links">
+        <a href="#skills" class="dock-icon" data-tooltip="Skills" aria-label="View skills section">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <div class="tooltip" aria-hidden="true">Skills</div>
+        </a>
+
+        <a href="https://github.com/mathewvaliente" class="dock-icon" data-tooltip="Portfolio (GitHub)" target="_blank" rel="noopener noreferrer" aria-label="Open portfolio on GitHub">
+          <!-- Kept a compact GitHub mark for the portfolio link -->
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.38 7.86 10.9.57.1.78-.25.78-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.27-1.68-1.27-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.72-1.54-2.56-.29-5.26-1.28-5.26-5.69 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.02 0 0 .97-.31 3.18 1.17.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.48 3.17-1.17 3.17-1.17.62 1.57.23 2.73.11 3.02.74.8 1.18 1.82 1.18 3.07 0 4.42-2.71 5.39-5.29 5.67.41.36.77 1.08.77 2.18 0 1.58-.01 2.86-.01 3.25 0 .31.21.66.79.55C20.71 21.38 24 17.08 24 12c0-6.27-5.23-11.5-12-11.5z"/></svg>
+          <div class="tooltip" aria-hidden="true">Portfolio</div>
+        </a>
+
+        <!-- NOTE: replace the email below with your real address if needed -->
+        <a href="mailto:hello@mathewvaliente.com" class="dock-icon" data-tooltip="Contact (Email)" aria-label="Send an email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <div class="tooltip" aria-hidden="true">Email</div>
+        </a>
+      </nav>
+    </div>
+
+    <script src="animation.js" defer></script>
+  </body>
+</html>
