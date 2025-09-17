@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mathew Valiente — Portfolio</title>
     <link rel="stylesheet" href="style.css" />
+    <!-- Font Awesome for skill icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Using Poppins to better match the attached design -->
@@ -13,22 +20,20 @@
       rel="stylesheet"
     />
 
-  <!-- Dock styles moved to style.css -->
+    <!-- Dock styles moved to style.css -->
   </head>
   <body>
     <!-- Header: replaced with Dock (keeps original site structure) -->
-  <header class="site-header" role="banner">
-      
-  </header>
+    <header id="top" class="site-header" role="banner"></header>
 
-    <main class="hero">
+  <main class="hero" id="home">
       <div class="container hero-inner">
         <div class="hero-left">
           <h1 class="greeting">
             Hey, I'm
-            <span class="name" style="font-size: 35px;">
-              Mathew <span class="name-last">Valiente</span></span
-            >
+            <span class="name" style="font-size:39px; display:inline-block; margin-left:62px;">
+              Mathew <span class="name-last">Valiente</span>
+            </span>
           </h1>
           <p class="subtitle">
             Junior Web Developer focused on building skills in Software
@@ -49,30 +54,295 @@
         </div>
 
         <div class="hero-right">
-          <img class="hero-image" src="mathew.png" alt="Portrait of Mathew Valiente" aria-hidden="false" />
+          <div
+            class="portrait"
+            tabindex="0"
+            role="img"
+            aria-label="Mathew Valiente portrait"
+            aria-hidden="false"
+          >
+            <img
+              class="hero-image"
+              src="Profile.jpg"
+              alt="Portrait of Mathew Valiente"
+            />
+            <div class="portrait-ring" aria-hidden="true"></div>
+          </div>
         </div>
-  </div>
+      </div>
     </main>
+    
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+      <div class="container">
+        <h2 class="section-title">Skills</h2>
+
+        <!-- Skill Filter Tabs -->
+        <div class="skill-filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="frontend">Frontend</button>
+          <button class="filter-btn" data-filter="backend">Backend</button>
+          <button class="filter-btn" data-filter="tools">Tools</button>
+        </div>
+
+        <!-- Skills Grid -->
+        <div class="skills-container">
+          <div class="skills-grid">
+            <!-- Frontend Skills -->
+            <div class="skill-card" data-category="frontend" data-skill="html5">
+              <i class="fab fa-html5"></i>
+              <span>HTML5</span>
+            </div>
+            <div class="skill-card" data-category="frontend" data-skill="css3">
+              <i class="fab fa-css3-alt"></i>
+              <span>CSS3</span>
+            </div>
+            <div
+              class="skill-card"
+              data-category="frontend"
+              data-skill="javascript"
+            >
+              <i class="fab fa-js-square"></i>
+              <span>JavaScript</span>
+            </div>
+            <div class="skill-card" data-category="frontend" data-skill="react">
+              <i class="fab fa-react"></i>
+              <span>React</span>
+            </div>
+
+            <div
+              class="skill-card"
+              data-category="frontend"
+              data-skill="bootstrap"
+            >
+              <i class="fab fa-bootstrap"></i>
+              <span>Bootstrap</span>
+            </div>
+
+            <div
+              class="skill-card"
+              data-category="frontend"
+              data-skill="tailwind"
+            >
+              <i class="fas fa-wind"></i>
+              <span>Tailwind</span>
+            </div>
+
+            <!-- Backend Skills -->
+            <div class="skill-card" data-category="backend" data-skill="nodejs">
+              <i class="fab fa-node-js"></i>
+              <span>Node.js</span>
+            </div>
+            <div class="skill-card" data-category="backend" data-skill="php">
+              <i class="fab fa-php"></i>
+              <span>PHP</span>
+            </div>
+            <div
+              class="skill-card"
+              data-category="backend"
+              data-skill="laravel"
+            >
+              <i class="fab fa-laravel"></i>
+              <span>Laravel</span>
+            </div>
+            <div class="skill-card" data-category="backend" data-skill="mysql">
+              <i class="fas fa-database"></i>
+              <span>MySQL</span>
+            </div>
+
+            <!-- Tools Skills -->
+            <div class="skill-card" data-category="tools" data-skill="git">
+              <i class="fab fa-git-alt"></i>
+              <span>Git</span>
+            </div>
+            <div class="skill-card" data-category="tools" data-skill="github">
+              <i class="fab fa-github"></i>
+              <span>GitHub</span>
+            </div>
+
+            <div class="skill-card" data-category="tools" data-skill="vscode">
+              <i class="fas fa-code"></i>
+              <span>VS Code</span>
+            </div>
+            <div class="skill-card" data-category="tools" data-skill="npm">
+              <i class="fab fa-npm"></i>
+              <span>NPM</span>
+            </div>
+            <div class="skill-card" data-category="tools" data-skill="docker">
+              <i class="fab fa-docker"></i>
+              <span>Docker</span>
+            </div>
+            <div class="skill-card" data-category="tools" data-skill="terminal">
+              <i class="fas fa-terminal"></i>
+              <span>Terminal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <br />
+    <br />
+
+    <!-- Brands Section -->
+    <section id="brands" class="brands">
+      <div class="container">
+        <h2 class="section-title"></h2>
+        <p></p>
+        <div class="brand-slider">
+          <div class="brand-track">
+            <div class="brand-item" data-brand="google">
+              <i class="fab fa-google"></i>
+            </div>
+            <div class="brand-item" data-brand="facebook">
+              <i class="fab fa-facebook"></i>
+            </div>
+            <div class="brand-item" data-brand="youtube">
+              <i class="fab fa-youtube"></i>
+            </div>
+            <div class="brand-item" data-brand="github">
+              <i class="fab fa-github"></i>
+            </div>
+            <div class="brand-item" data-brand="microsoft">
+              <i class="fab fa-microsoft"></i>
+            </div>
+            <div class="brand-item" data-brand="apple">
+              <i class="fab fa-apple"></i>
+            </div>
+            <div class="brand-item" data-brand="dribbble">
+              <i class="fab fa-dribbble"></i>
+            </div>
+            <div class="brand-item" data-brand="spotify">
+              <i class="fab fa-spotify"></i>
+            </div>
+            <!-- Duplicate for seamless loop -->
+            <div class="brand-item" data-brand="google">
+              <i class="fab fa-google"></i>
+            </div>
+            <div class="brand-item" data-brand="facebook">
+              <i class="fab fa-facebook"></i>
+            </div>
+            <div class="brand-item" data-brand="youtube">
+              <i class="fab fa-youtube"></i>
+            </div>
+            <div class="brand-item" data-brand="github">
+              <i class="fab fa-github"></i>
+            </div>
+            <div class="brand-item" data-brand="microsoft">
+              <i class="fab fa-microsoft"></i>
+            </div>
+            <div class="brand-item" data-brand="apple">
+              <i class="fab fa-apple"></i>
+            </div>
+            <div class="brand-item" data-brand="dribbble">
+              <i class="fab fa-dribbble"></i>
+            </div>
+            <div class="brand-item" data-brand="spotify">
+              <i class="fab fa-spotify"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects placeholder so dock anchors have a target -->
+    <section id="projects" class="projects" style="padding: 3rem 0">
+      <div class="container">
+        <h2 class="section-title">Projects</h2>
+        <p class="muted">
+          Projects will appear here. (Placeholder for dock anchor)
+        </p>
+      </div>
+    </section>
 
     <!-- Dock JS moved to animation.js -->
 
     <!-- simplified center dock: only Skills, Portfolio (GitHub) and Contact (email) -->
-    <div style="display:flex;justify-content:center;padding:12px 0;background:transparent">
+    <!-- moved presentation to CSS: .dock-wrapper is fixed and centered -->
+    <div class="dock-wrapper" id="dock-wrapper" aria-hidden="false">
       <nav class="dock" id="dock" aria-label="Site quick links">
-        <a href="#skills" class="dock-icon" data-tooltip="Skills" aria-label="View skills section">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <a
+          href="#home"
+          class="dock-icon"
+          data-tooltip="Home"
+          aria-label="Go to top / home"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 3l9 8h-3v9h-12v-9h-3z" />
+          </svg>
+          <div class="tooltip" aria-hidden="true">Home</div>
+        </a>
+
+        <a
+          href="#projects"
+          class="dock-icon"
+          data-tooltip="Projects"
+          aria-label="View projects section"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+            />
+          </svg>
+          <div class="tooltip" aria-hidden="true">Projects</div>
+        </a>
+
+        <a
+          href="#skills"
+          class="dock-icon"
+          data-tooltip="Skills"
+          aria-label="View skills section"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
           <div class="tooltip" aria-hidden="true">Skills</div>
         </a>
 
-        <a href="https://github.com/mathewvaliente" class="dock-icon" data-tooltip="Portfolio (GitHub)" target="_blank" rel="noopener noreferrer" aria-label="Open portfolio on GitHub">
+        <a
+          href="https://github.com/mathewvaliente"
+          class="dock-icon"
+          data-tooltip="Portfolio (GitHub)"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open portfolio on GitHub"
+        >
           <!-- Kept a compact GitHub mark for the portfolio link -->
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.38 7.86 10.9.57.1.78-.25.78-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.27-1.68-1.27-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.72-1.54-2.56-.29-5.26-1.28-5.26-5.69 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.02 0 0 .97-.31 3.18 1.17.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.48 3.17-1.17 3.17-1.17.62 1.57.23 2.73.11 3.02.74.8 1.18 1.82 1.18 3.07 0 4.42-2.71 5.39-5.29 5.67.41.36.77 1.08.77 2.18 0 1.58-.01 2.86-.01 3.25 0 .31.21.66.79.55C20.71 21.38 24 17.08 24 12c0-6.27-5.23-11.5-12-11.5z"/></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.38 7.86 10.9.57.1.78-.25.78-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.27-1.68-1.27-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.72-1.54-2.56-.29-5.26-1.28-5.26-5.69 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.02 0 0 .97-.31 3.18 1.17.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.48 3.17-1.17 3.17-1.17.62 1.57.23 2.73.11 3.02.74.8 1.18 1.82 1.18 3.07 0 4.42-2.71 5.39-5.29 5.67.41.36.77 1.08.77 2.18 0 1.58-.01 2.86-.01 3.25 0 .31.21.66.79.55C20.71 21.38 24 17.08 24 12c0-6.27-5.23-11.5-12-11.5z"
+            />
+          </svg>
           <div class="tooltip" aria-hidden="true">Portfolio</div>
         </a>
 
         <!-- NOTE: replace the email below with your real address if needed -->
-        <a href="mailto:hello@mathewvaliente.com" class="dock-icon" data-tooltip="Contact (Email)" aria-label="Send an email">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <a
+          href="mailto:hello@mathewvaliente.com"
+          class="dock-icon"
+          data-tooltip="Contact (Email)"
+          aria-label="Send an email"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path
+              d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+            />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
           <div class="tooltip" aria-hidden="true">Email</div>
         </a>
       </nav>
