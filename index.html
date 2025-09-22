@@ -23,54 +23,130 @@
     <!-- Dock styles moved to style.css -->
   </head>
   <body>
-    <!-- Header: replaced with Dock (keeps original site structure) -->
-    <header id="top" class="site-header" role="banner"></header>
+     <header id="top" class="site-header" role="banner">
+      <div class="header-inner container">
+        <div class="brand">Mat-devx</div>
+        <button class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Toggle navigation">
+          <span class="hamburger-icon">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </span>
+        </button>
+        <nav class="site-nav desktop-nav" aria-label="Primary">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div id="mobile-nav" class="mobile-nav" aria-hidden="true">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </header>
 
   <main class="hero" id="home">
       <div class="container hero-inner">
-        <div class="hero-left">
-          <h1 class="greeting">
-            Hey, I'm
-            <span class="name" style="font-size:39px; display:inline-block; margin-left:62px;">
-              Mathew <span class="name-last">Valiente</span>
-            </span>
-          </h1>
-          <p class="subtitle">
-            Junior Web Developer focused on building skills in Software
-            Engineering, while aspiring to specialize in AI and next-generation
-            technologies.
-          </p>
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="greeting">
+              Hey, I'm
+              <span class="name">Mathew Valiente</span>
+            </h1>
+            <p class="subtitle">
+              Junior Web Developer focused on building skills in Software
+              Engineering, while aspiring to specialize in AI and next-generation
+              technologies.
+            </p>
 
-          <div class="code-line" aria-hidden="true">
-            <span class="code-prefix">&lt;</span>
-            <span id="typing" class="typing"></span>
-            <span class="code-suffix">/&gt;</span>
+            <div class="code-line" aria-hidden="true">
+              <span class="code-prefix">&lt;</span>
+              <span id="typing" class="typing"></span>
+              <span class="code-suffix">/&gt;</span>
+            </div>
+
+            <div class="cta-row">
+              <a class="btn-primary" href="#contact">Hire Me</a>
+              <a class="btn-ghost" href="#resume">Download Resume</a>
+            </div>
           </div>
 
-          <div class="cta-row">
-            <a class="btn-primary" href="#contact">Hire Me</a>
-            <a class="btn-ghost" href="#resume">Download Resume</a>
-          </div>
-        </div>
-
-        <div class="hero-right">
-          <div
-            class="portrait"
-            tabindex="0"
-            role="img"
-            aria-label="Mathew Valiente portrait"
-            aria-hidden="false"
-          >
-            <img
-              class="hero-image"
-              src="Profile.jpg"
-              alt="Portrait of Mathew Valiente"
-            />
-            <div class="portrait-ring" aria-hidden="true"></div>
+          <div class="hero-portrait">
+            <div class="portrait-container">
+              <img
+                class="portrait-img"
+                src="Profile.jpg"
+                alt="Portrait of Mathew Valiente"
+              />
+              <div class="portrait-ring" aria-hidden="true"></div>
+            </div>
           </div>
         </div>
       </div>
     </main>
+
+    
+    <!-- Brands Section -->
+    <section id="brands" class="brands">
+      <div class="container">
+        <h2 class="section-title"></h2>
+        <p></p>
+        <div class="brand-slider">
+          <div class="brand-track">
+            <div class="brand-item" data-brand="google">
+              <i class="fab fa-google"></i>
+            </div>
+            <div class="brand-item" data-brand="facebook">
+              <i class="fab fa-facebook"></i>
+            </div>
+            <div class="brand-item" data-brand="youtube">
+              <i class="fab fa-youtube"></i>
+            </div>
+            <div class="brand-item" data-brand="github">
+              <i class="fab fa-github"></i>
+            </div>
+            <div class="brand-item" data-brand="microsoft">
+              <i class="fab fa-microsoft"></i>
+            </div>
+            <div class="brand-item" data-brand="apple">
+              <i class="fab fa-apple"></i>
+            </div>
+            <div class="brand-item" data-brand="dribbble">
+              <i class="fab fa-dribbble"></i>
+            </div>
+            <div class="brand-item" data-brand="spotify">
+              <i class="fab fa-spotify"></i>
+            </div>
+            <!-- Duplicate for seamless loop -->
+            <div class="brand-item" data-brand="google">
+              <i class="fab fa-google"></i>
+            </div>
+            <div class="brand-item" data-brand="facebook">
+              <i class="fab fa-facebook"></i>
+            </div>
+            <div class="brand-item" data-brand="youtube">
+              <i class="fab fa-youtube"></i>
+            </div>
+            <div class="brand-item" data-brand="github">
+              <i class="fab fa-github"></i>
+            </div>
+            <div class="brand-item" data-brand="microsoft">
+              <i class="fab fa-microsoft"></i>
+            </div>
+            <div class="brand-item" data-brand="apple">
+              <i class="fab fa-apple"></i>
+            </div>
+            <div class="brand-item" data-brand="dribbble">
+              <i class="fab fa-dribbble"></i>
+            </div>
+            <div class="brand-item" data-brand="spotify">
+              <i class="fab fa-spotify"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
     
     <!-- Skills Section -->
     <section id="skills" class="skills">
@@ -184,66 +260,6 @@
     <br />
     <br />
 
-    <!-- Brands Section -->
-    <section id="brands" class="brands">
-      <div class="container">
-        <h2 class="section-title"></h2>
-        <p></p>
-        <div class="brand-slider">
-          <div class="brand-track">
-            <div class="brand-item" data-brand="google">
-              <i class="fab fa-google"></i>
-            </div>
-            <div class="brand-item" data-brand="facebook">
-              <i class="fab fa-facebook"></i>
-            </div>
-            <div class="brand-item" data-brand="youtube">
-              <i class="fab fa-youtube"></i>
-            </div>
-            <div class="brand-item" data-brand="github">
-              <i class="fab fa-github"></i>
-            </div>
-            <div class="brand-item" data-brand="microsoft">
-              <i class="fab fa-microsoft"></i>
-            </div>
-            <div class="brand-item" data-brand="apple">
-              <i class="fab fa-apple"></i>
-            </div>
-            <div class="brand-item" data-brand="dribbble">
-              <i class="fab fa-dribbble"></i>
-            </div>
-            <div class="brand-item" data-brand="spotify">
-              <i class="fab fa-spotify"></i>
-            </div>
-            <!-- Duplicate for seamless loop -->
-            <div class="brand-item" data-brand="google">
-              <i class="fab fa-google"></i>
-            </div>
-            <div class="brand-item" data-brand="facebook">
-              <i class="fab fa-facebook"></i>
-            </div>
-            <div class="brand-item" data-brand="youtube">
-              <i class="fab fa-youtube"></i>
-            </div>
-            <div class="brand-item" data-brand="github">
-              <i class="fab fa-github"></i>
-            </div>
-            <div class="brand-item" data-brand="microsoft">
-              <i class="fab fa-microsoft"></i>
-            </div>
-            <div class="brand-item" data-brand="apple">
-              <i class="fab fa-apple"></i>
-            </div>
-            <div class="brand-item" data-brand="dribbble">
-              <i class="fab fa-dribbble"></i>
-            </div>
-            <div class="brand-item" data-brand="spotify">
-              <i class="fab fa-spotify"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- Projects placeholder so dock anchors have a target -->
     <section id="projects" class="projects" style="padding: 3rem 0">
@@ -261,18 +277,7 @@
     <!-- moved presentation to CSS: .dock-wrapper is fixed and centered -->
     <div class="dock-wrapper" id="dock-wrapper" aria-hidden="false">
       <nav class="dock" id="dock" aria-label="Site quick links">
-        <a
-          href="#home"
-          class="dock-icon"
-          data-tooltip="Home"
-          aria-label="Go to top / home"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="currentColor" d="M12 3l9 8h-3v9h-12v-9h-3z" />
-          </svg>
-          <div class="tooltip" aria-hidden="true">Home</div>
-        </a>
-
+       
         <a
           href="#projects"
           class="dock-icon"
@@ -348,6 +353,6 @@
       </nav>
     </div>
 
-    <script src="animation.js" defer></script>
+    <script src="main.js" defer></script>
   </body>
 </html>
