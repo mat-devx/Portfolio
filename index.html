@@ -14,16 +14,21 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Using Poppins to better match the attached design -->
+    <!-- Poppins for body, Space Grotesk for headings (light + heavy accents) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
+    <!-- Custom cursor dot -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    
     <header id="top" class="site-header" role="banner">
       <div class="header-inner container">
-        <div class="brand">Mat-devx</div>
+        <div class="brand">
+          <span class="brand-text">Mat</span><span class="brand-accent">-dev</span><span class="brand-highlight">x</span>
+        </div>
         <button
           class="nav-toggle"
           aria-expanded="false"
@@ -89,179 +94,69 @@
       </div>
     </main>
 
-    <!-- Brands Section -->
+      <!-- Brands Section -->
     <section id="brands" class="brands">
-      <div class="container">
-        <h2 class="section-title"></h2>
-        <p></p>
-        <div class="brand-slider">
-          <div class="brand-track">
-            <a
-              class="brand-item"
-              data-brand="google"
-              href="https://www.google.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Google"
-            >
-              <i class="fab fa-google"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="facebook"
-              href="https://www.facebook.com/mathew.valiente.9"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-            >
-              <i class="fab fa-facebook"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="youtube"
-              href="https://www.youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="YouTube"
-            >
-              <i class="fab fa-youtube"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="github"
-              href="https://github.com/mat-devx"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-            >
-              <i class="fab fa-github"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="microsoft"
-              href="https://www.microsoft.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Microsoft"
-            >
-              <i class="fab fa-microsoft"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="apple"
-              href="https://www.apple.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Apple"
-            >
-              <i class="fab fa-apple"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="dribbble"
-              href="https://dribbble.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Dribbble"
-            >
-              <i class="fab fa-dribbble"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="spotify"
-              href="https://www.spotify.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Spotify"
-            >
-              <i class="fab fa-spotify"></i>
-            </a>
-            <!-- Duplicate for seamless loop (also clickable) -->
-            <a
-              class="brand-item"
-              data-brand="google"
-              href="https://www.google.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Google"
-            >
-              <i class="fab fa-google"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="facebook"
-              href="https://www.facebook.com/mathew.valiente.9"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-            >
-              <i class="fab fa-facebook"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="youtube"
-              href="https://www.youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="YouTube"
-            >
-              <i class="fab fa-youtube"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="github"
-              href="https://github.com/mat-devx"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-            >
-              <i class="fab fa-github"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="microsoft"
-              href="https://www.microsoft.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Microsoft"
-            >
-              <i class="fab fa-microsoft"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="apple"
-              href="https://www.apple.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Apple"
-            >
-              <i class="fab fa-apple"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="dribbble"
-              href="https://dribbble.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Dribbble"
-            >
-              <i class="fab fa-dribbble"></i>
-            </a>
-            <a
-              class="brand-item"
-              data-brand="spotify"
-              href="https://www.spotify.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Spotify"
-            >
-              <i class="fab fa-spotify"></i>
-            </a>
-          </div>
+        <div class="container">
+            <h2 class="section-title"></h2>
+            <p></p>
+            <div class="brand-slider">
+                <div class="brand-track">
+                    <div class="brand-item" data-brand="google">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <div class="brand-item" data-brand="facebook">
+                        <i class="fab fa-facebook"></i>
+                    </div>
+                    <div class="brand-item" data-brand="youtube">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="brand-item" data-brand="github">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div class="brand-item" data-brand="microsoft">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="brand-item" data-brand="apple">
+                        <i class="fab fa-apple"></i>
+                    </div>
+                    <div class="brand-item" data-brand="dribbble">
+                        <i class="fab fa-dribbble"></i>
+                    </div>
+                    <div class="brand-item" data-brand="spotify">
+                        <i class="fab fa-spotify"></i>
+                    </div>
+                    <!-- Duplicate for seamless loop -->
+                    <div class="brand-item" data-brand="google">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <div class="brand-item" data-brand="facebook">
+                        <i class="fab fa-facebook"></i>
+                    </div>
+                    <div class="brand-item" data-brand="youtube">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="brand-item" data-brand="github">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div class="brand-item" data-brand="microsoft">
+                        <i class="fab fa-microsoft"></i>
+                    </div>
+                    <div class="brand-item" data-brand="apple">
+                        <i class="fab fa-apple"></i>
+                    </div>
+                    <div class="brand-item" data-brand="dribbble">
+                        <i class="fab fa-dribbble"></i>
+                    </div>
+                    <div class="brand-item" data-brand="spotify">
+                        <i class="fab fa-spotify"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </section>
 
+
+ 
     <!-- Skills Section -->
     <section id="skills" class="skills">
       <div class="container">
@@ -366,20 +261,101 @@
     <br />
     <br />
 
-    <!-- Projects placeholder so dock anchors have a target -->
-    <section id="projects" class="projects" style="padding: 3rem 0">
+
+
+    
+    <!-- About Section (two-column layout: left content, right image card) -->
+    <section id="about" class="about">
+      <div class="container about-grid">
+        <div class="about-left">
+          <h2 class="section-title">ABOUT ME</h2>
+          <p class="about-desc">
+            Hi, I'm Mathew — a digital designer and developer passionate about
+            crafting meaningful and impactful digital experiences.
+          </p>
+
+          <div class="stats" aria-hidden="false">
+            <div class="stat-item">
+              <div class="stat-number">1</div>
+              <div class="stat-label">Years of Experience</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">6</div>
+              <div class="stat-label">Completed Projects</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">2</div>
+              <div class="stat-label">Clients Development Phase</div>
+            </div>
+          </div>
+
+          <div class="contact-row">
+            <div class="contact-block">
+              <div class="contact-title">Call Today :</div>
+              <div class="contact-info">+63 9635874733</div>
+            </div>
+            <div class="contact-block">
+              <div class="contact-title">Email :</div>
+              <div class="contact-info">mathewvaliente20@gmail.com</div>
+            </div>
+          </div>
+
+          <div class="social-icons" aria-label="social links">
+            <a class="social" href="#" aria-label="social-facebook"
+              ><i class="fab fa-facebook"></i
+            ></a>
+            <a class="social" href="#" aria-label="social-instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a class="social" href="#" aria-label="social-github"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a class="social" href="#" aria-label="social-dribbble"
+              ><i class="fab fa-dribbble"></i
+            ></a>
+          </div>
+        </div>
+
+        <div class="about-right">
+          <div class="image-card" role="img" aria-label="profile image">
+             <img src="Me.jpg" alt="Portrait of Mathew Valiente" class="about-portrait" data-about-image="Me.jpg" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+        <!-- Projects placeholder so dock anchors have a target -->
+    <section id="projects" class="projects">
       <div class="container">
         <h2 class="section-title">Projects</h2>
         <p class="muted">
           Projects will appear here. (Placeholder for dock anchor)
+          <br>
+          <br>
+          <br>
+            <br>
+          <br>
+          <br>
+            <br>
+            <br>
+          <br>
+          <br>
+            <br>
+          <br>
+          <br>
+            <br>
+            <br>
+          <br>
+          <br>
+            <br>
+          <br>
+          <br>
+            <br>
         </p>
       </div>
     </section>
 
-    <!-- Dock JS moved to animation.js -->
-
-    <!-- simplified center dock: only Skills, Portfolio (GitHub) and Contact (email) -->
-    <!-- moved presentation to CSS: .dock-wrapper is fixed and centered -->
+    
     <div class="dock-wrapper" id="dock-wrapper" aria-hidden="false">
       <nav class="dock" id="dock" aria-label="Site quick links">
         <a

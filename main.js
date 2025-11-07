@@ -31,14 +31,17 @@
   const PAUSE_MS = 1800;
 
   // Initialize on DOM load
-  // Init modules on DOMContentLoaded
   document.addEventListener("DOMContentLoaded", function () {
     initTypingAnimation();
     initHeroAnimations();
     initNavToggle();
+    initHeaderScrollAnimation();
     initSkillsFilter();
     initPortraitEffects();
     initDockInteraction();
+    initPortraitScrollAnimation();
+    initCustomCursor();
+    initProjectsScrollAnimation();
   });
 
   // Typing animation
@@ -49,8 +52,8 @@
       charIdx = 0,
       typingForward = true;
 
-  // Typing loop
-  function tickTyping() {
+    // Typing loop
+    function tickTyping() {
       const cur = PHRASES[phraseIdx];
 
       if (typingForward) {
@@ -81,8 +84,8 @@
 
   // Hero animations
   function initHeroAnimations() {
-  // Hero animations (respect prefers-reduced-motion)
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    // Hero animations (respect prefers-reduced-motion)
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       // Just make content visible immediately for users who prefer reduced motion
       document
         .querySelectorAll(".hero-content, .hero-text, .hero-portrait")
@@ -111,332 +114,277 @@
     }
   }
 
-  // Navigation toggle
+  // Navigation toggle functionality
   function initNavToggle() {
-  // Navigation toggle (update selectors above if renamed)
-  if (!toggle || !mobileNav) return;
+    if (!toggle || !mobileNav) return;
 
-  // Toggle mobile nav and manage focus
-  function setOpen(isOpen) {
-      toggle.setAttribute("aria-expanded", String(isOpen));
-      mobileNav.setAttribute("aria-hidden", String(!isOpen));
+    // Handle toggle click
+    toggle.addEventListener('click', function() {
+      const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggleMobileNav(!isExpanded);
+    });
 
+    // Close mobile nav when clicking on nav links
+    const navLinks = mobileNav.querySelectorAll('a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        toggleMobileNav(false);
+      });
+    });
+
+    // Close mobile nav when clicking outside
+    document.addEventListener('click', function(e) {
+      const isClickInsideNav = toggle.contains(e.target) || mobileNav.contains(e.target);
+      if (!isClickInsideNav && mobileNav.classList.contains('open')) {
+        toggleMobileNav(false);
+      }
+    });
+
+    // Handle keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      // Close nav with Escape key
+      if (e.key === 'Escape' && mobileNav.classList.contains('open')) {
+        toggleMobileNav(false);
+        toggle.focus(); // Return focus to toggle button
+      }
+    });
+
+    // Trap focus within mobile nav when open
+    mobileNav.addEventListener('keydown', function(e) {
+      if (e.key === 'Tab') {
+        const focusableElements = mobileNav.querySelectorAll('a');
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    });
+
+    // Toggle mobile navigation function
+    function toggleMobileNav(isOpen) {
+      toggle.setAttribute('aria-expanded', isOpen);
+      mobileNav.classList.toggle('open', isOpen);
+      mobileNav.setAttribute('aria-hidden', !isOpen);
+      body.classList.toggle('nav-open', isOpen);
+
+      // Focus management
       if (isOpen) {
-        mobileNav.classList.add("open");
-        body.classList.add("nav-open");
-
-        const firstFocusableElement = mobileNav.querySelector("a");
-        if (firstFocusableElement) {
-          setTimeout(() => firstFocusableElement.focus(), 100);
+        // Focus first nav link when opening
+        const firstLink = mobileNav.querySelector('a');
+        if (firstLink) {
+          setTimeout(() => firstLink.focus(), 300); // Delay for animation
         }
+      }
+    }
+  }
+
+  // Smooth header hide/show animation on scroll
+  function initHeaderScrollAnimation() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+
+    let lastScrollY = window.scrollY;
+    let isHeaderHidden = false;
+    let scrollTimeout;
+
+    function updateHeader() {
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > lastScrollY;
+      const scrolledPastThreshold = currentScrollY > 80; // Reduced threshold for more responsive feel
+      const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+
+      // Only react to significant scroll movements (prevents jittery behavior)
+      if (scrollDelta > 5) {
+        if (scrollingDown && scrolledPastThreshold && !isHeaderHidden) {
+          // Hide header when scrolling down
+          header.classList.add('header--hidden');
+          isHeaderHidden = true;
+        } else if (!scrollingDown && isHeaderHidden) {
+          // Show header when scrolling up
+          header.classList.remove('header--hidden');
+          isHeaderHidden = false;
+        }
+      }
+
+      // Show header when near the top
+      if (currentScrollY < 50) {
+        header.classList.remove('header--hidden');
+        isHeaderHidden = false;
+      }
+
+      lastScrollY = currentScrollY;
+    }
+
+    // Debounced scroll handler for even smoother performance
+    function onScroll() {
+      clearTimeout(scrollTimeout);
+      
+      // Immediate update for responsiveness
+      if (!isHeaderHidden && window.scrollY > lastScrollY && window.scrollY > 80) {
+        requestAnimationFrame(updateHeader);
       } else {
-        mobileNav.classList.remove("open");
-        body.classList.remove("nav-open");
-        toggle.focus();
+        // Slight delay for showing header to prevent flickering
+        scrollTimeout = setTimeout(() => {
+          requestAnimationFrame(updateHeader);
+        }, 100);
       }
     }
 
-    // Close mobile nav when window resizes to desktop width
-    // Close mobile nav on resize (desktop breakpoint = 992px)
-    function handleResize() {
-      if (window.innerWidth >= 992) {
-        setOpen(false);
-      }
-    }
-
-    // Add resize listener
-    window.addEventListener("resize", handleResize);
-
-    // Initial check on page load
-    handleResize();
-
-    // Toggle menu
-  // Hamburger click handler
-    toggle.addEventListener("click", function (e) {
-      e.stopPropagation();
-      const isOpen = toggle.getAttribute("aria-expanded") === "true";
-      setOpen(!isOpen);
-    });
-
-    // Close on Escape
-    document.addEventListener("keydown", function (e) {
-      if (
-        e.key === "Escape" &&
-        toggle.getAttribute("aria-expanded") === "true"
-      ) {
-        setOpen(false);
-      }
-    });
-
-    // Close on outside click
-  // Close on outside click
-    document.addEventListener("click", function (e) {
-      if (
-        toggle.getAttribute("aria-expanded") === "true" &&
-        !mobileNav.contains(e.target) &&
-        !toggle.contains(e.target)
-      ) {
-        setOpen(false);
-      }
-    });
-
-    // Close menu on link click
-    // Close menu when a link is clicked
-    mobileNav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => setOpen(false));
-    });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    
+    // Handle resize events
+    window.addEventListener('resize', () => {
+      lastScrollY = window.scrollY;
+    }, { passive: true });
   }
 
-  // Skills filter
+  // Projects background transition on scroll
+  function initProjectsScrollAnimation() {
+    const projectsSection = document.getElementById('projects');
+    if (!projectsSection) return;
+
+    function updateProjectsBackground() {
+      const projectsSectionRect = projectsSection.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Calculate how much of the projects section is visible
+      const sectionTop = projectsSectionRect.top;
+      
+      // Simple trigger: when the projects section top is in the upper half of the viewport
+      const isInView = sectionTop < windowHeight * 0.5;
+      
+      if (isInView) {
+        projectsSection.classList.add('white-bg');
+      } else {
+        projectsSection.classList.remove('white-bg');
+      }
+    }
+
+    // Throttled scroll handler for better performance
+    let ticking = false;
+    function onProjectsScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateProjectsBackground();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onProjectsScroll, { passive: true });
+    window.addEventListener('resize', onProjectsScroll, { passive: true });
+    
+    // Initial check
+    updateProjectsBackground();
+  }
+
+  // Placeholder functions for other features
   function initSkillsFilter() {
-    const cards = Array.from(document.querySelectorAll(".skill-card"));
-    const filters = Array.from(document.querySelectorAll(".filter-btn"));
-
-  // Skills filter (edit selectors above if renamed)
-  if (!cards.length || !filters.length) return;
-
-  // Apply filter
-  function reveal(filter) {
-      const shouldShow = (c) =>
-        !filter || filter === "all" ? true : c.dataset.category === filter;
-
-      cards.forEach((c) => {
-        c.classList.remove("animate");
-        shouldShow(c)
-          ? c.classList.remove("hidden")
-          : c.classList.add("hidden");
-      });
-
-      const visible = cards.filter(shouldShow);
-      visible.forEach((c, i) =>
-        setTimeout(() => c.classList.add("animate"), i * 80)
-      );
-    }
-
-    // Initialize with all skills visible
-    reveal("all");
-
-    // Filter click handlers
-    filters.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        filters.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        reveal(btn.dataset.filter || "all");
-      });
-    });
+    // Skills filter functionality can be added here
   }
 
-  // Portrait hover effects
   function initPortraitEffects() {
-    const portraitContainer = document.querySelector(".portrait-container");
-  // Portrait tilt effects
-  if (!portraitContainer) return;
-
-    const img = portraitContainer.querySelector(".portrait-img");
-    if (!img) return;
-
-    const target = { rx: 0, ry: 0, tx: 0, ty: 0, scale: 1 };
-    const current = { rx: 0, ry: 0, tx: 0, ty: 0, scale: 1 };
-    const DAMP = 0.08;
-
-    function setTargets(e) {
-      const rect = portraitContainer.getBoundingClientRect();
-      const clientX =
-        e.clientX ||
-        (e.touches && e.touches[0] && e.touches[0].clientX) ||
-        rect.left + rect.width / 2;
-      const clientY =
-        e.clientY ||
-        (e.touches && e.touches[0] && e.touches[0].clientY) ||
-        rect.top + rect.height / 2;
-
-      const x = (clientX - rect.left) / rect.width - 0.5;
-      const y = (clientY - rect.top) / rect.height - 0.5;
-
-      target.rx = y * 6;
-      target.ry = -x * 8;
-      target.tx = x * 6;
-      target.ty = -y * 6;
-      target.scale = 1.04;
-    }
-
-    function reset() {
-      target.rx = 0;
-      target.ry = 0;
-      target.tx = 0;
-      target.ty = 0;
-      target.scale = 1;
-    }
-
-    portraitContainer.addEventListener("mousemove", setTargets);
-    portraitContainer.addEventListener("touchmove", setTargets, {
-      passive: true,
-    });
-    portraitContainer.addEventListener("mouseleave", reset);
-    portraitContainer.addEventListener("touchend", reset);
-
-  // Portrait animation loop (tweak DAMP to change snappiness)
-  function animate() {
-      current.rx += (target.rx - current.rx) * DAMP;
-      current.ry += (target.ry - current.ry) * DAMP;
-      current.tx += (target.tx - current.tx) * DAMP;
-      current.ty += (target.ty - current.ty) * DAMP;
-      current.scale += (target.scale - current.scale) * DAMP;
-
-      portraitContainer.style.transform = `translateZ(0) translateY(-5px) rotateX(${current.rx.toFixed(
-        2
-      )}deg) rotateY(${current.ry.toFixed(2)}deg)`;
-
-      if (img) {
-        img.style.transform = `scale(${current.scale.toFixed(
-          3
-        )}) translate(${current.tx.toFixed(1)}px, ${current.ty.toFixed(1)}px)`;
-      }
-
-      requestAnimationFrame(animate);
-    }
-
-    requestAnimationFrame(animate);
+    // Portrait effects can be added here
   }
 
-  // Dock interaction
   function initDockInteraction() {
-    const dock = document.getElementById("dock");
-  // Dock interactions and active-section highlighting
-  if (!dock) return;
+    // Dock interaction can be added here
+  }
 
-    // Animate dock icons entrance
-    const dockIcons = dock.querySelectorAll(".dock-icon");
-    dockIcons.forEach((icon, index) => {
-      icon.style.opacity = "0";
-      icon.style.transform = "translateY(20px)";
+  function initPortraitScrollAnimation() {
+    // Portrait scroll animation can be added here
+  }
 
-      setTimeout(() => {
-        icon.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-        icon.style.opacity = "1";
-        icon.style.transform = "";
-      }, 100 + index * 100);
+  // Custom cursor with delay effect
+  function initCustomCursor() {
+    const cursorDot = document.getElementById('cursorDot');
+    if (!cursorDot) return;
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let dotX = 0;
+    let dotY = 0;
+    let isMouseMoving = false;
+    let mouseTimeout;
+
+    // Track mouse movement
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      isMouseMoving = true;
+      
+      // Show cursor dot when mouse moves
+      cursorDot.classList.add('active');
+      
+      // Check if cursor is over a white background section
+      updateCursorColor(e.clientX, e.clientY);
+      
+      // Clear existing timeout
+      clearTimeout(mouseTimeout);
+      
+      // Hide cursor dot after 2 seconds of no movement
+      mouseTimeout = setTimeout(() => {
+        isMouseMoving = false;
+        cursorDot.classList.remove('active');
+      }, 2000);
     });
 
-    // Highlight active section
-    const sections = document.querySelectorAll("section[id]");
-
-    function highlightActiveSection() {
-      const scrollPos = window.scrollY + 200;
-
-      sections.forEach((section) => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const sectionId = section.getAttribute("id");
-
-        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-          dockIcons.forEach((link) => {
-            link.classList.remove("active");
-            if (link.getAttribute("href") === "#" + sectionId) {
-              link.classList.add("active");
-            }
-          });
-        }
-      });
+    // Function to update cursor color based on background
+    function updateCursorColor(x, y) {
+      // Get the element under the cursor
+      const elementUnderCursor = document.elementFromPoint(x, y);
+      if (!elementUnderCursor) return;
+      
+      // Check if the cursor is over the projects section with white background
+      const projectsSection = document.getElementById('projects');
+      const isOverProjects = projectsSection && (
+        elementUnderCursor === projectsSection || 
+        projectsSection.contains(elementUnderCursor)
+      );
+      
+      if (isOverProjects && projectsSection.classList.contains('white-bg')) {
+        cursorDot.classList.add('dark');
+      } else {
+        cursorDot.classList.remove('dark');
+      }
     }
 
-    window.addEventListener("scroll", highlightActiveSection, {
-      passive: true,
+    // Hide cursor when mouse leaves window
+    document.addEventListener('mouseleave', () => {
+      cursorDot.classList.remove('active');
+      isMouseMoving = false;
     });
-    highlightActiveSection();
-  }
-})();
 
-(function () {
-  // ----- HEADER AUTO-HIDE CONFIG -----
-  // Change the selector if your header uses a different class/id. The script
-  // toggles the CSS class `header--hidden` on the header element — update
-  // your CSS if you prefer a different class name or animation.
-  const header = document.querySelector('.site-header');
-  if (!header) return;
+    // Show cursor when mouse enters window
+    document.addEventListener('mouseenter', () => {
+      if (isMouseMoving) {
+        cursorDot.classList.add('active');
+      }
+    });
 
-  // If you rename the nav toggle button, update this selector to match.
-  const navToggle = document.querySelector('.nav-toggle'); // used to detect mobile menu open
-
-  // State variables used to determine scroll direction and debouncing
-  let lastScroll = window.scrollY || 0;
-  let ticking = false;
-
-  // Tweak these to change behavior:
-  // - hideAfter: how many pixels down before the header can hide
-  // - ignoreDelta: ignore tiny scrolls (helps avoid flicker on touch)
-  const hideAfter = 60; // only start hiding after this many px scrolled down
-  const ignoreDelta = 5; // ignore micro scrolls
-
-  // Prevents content jumping when header is fixed by adding top padding equal
-  // to the header height. If you prefer not to set padding, remove this and
-  // adjust your layout/CSS so the header doesn't overlap content.
-  function setBodyPadding() {
-    const h = header.offsetHeight || 0;
-    document.body.style.paddingTop = h + 'px';
+    // Animate cursor dot with delay
+    function animateCursor() {
+      // Smoothly interpolate cursor position (creates delay effect)
+      const ease = 0.03;  
+      dotX += (mouseX - dotX) * ease;
+      dotY += (mouseY - dotY) * ease;
+      
+      // Update cursor position
+      cursorDot.style.left = dotX + 'px';
+      cursorDot.style.top = dotY + 'px';
+      
+      requestAnimationFrame(animateCursor);
+    }
+    
+    // Start animation loop
+    animateCursor();
   }
 
-  // Run once on load and whenever the window resizes (header height may change)
-  setBodyPadding();
-  window.addEventListener('resize', setBodyPadding);
-
-  // Return true when we should keep the header visible (e.g. mobile menu open)
-  function shouldSkipHiding() {
-    // If mobile nav is expanded, keep header visible. The nav toggle should
-    // set aria-expanded="true" when open — if your implementation differs,
-    // change this check accordingly.
-    if (navToggle && navToggle.getAttribute('aria-expanded') === 'true') {
-      return true;
-    }
-    return false;
-  }
-
-  // Main logic that decides whether to hide or show the header based on
-  // scroll direction and thresholds. If you want the header to hide faster,
-  // reduce `hideAfter`. To make it less sensitive to direction changes,
-  // increase `ignoreDelta`.
-  function updateHeaderOnScroll() {
-    const current = window.scrollY || 0;
-
-    // Always show at the very top of the page
-    if (current <= 0) {
-      header.classList.remove('header--hidden');
-      lastScroll = current;
-      return;
-    }
-
-    // If there are conditions to keep the header visible (mobile menu open),
-    // respect them
-    if (shouldSkipHiding()) {
-      header.classList.remove('header--hidden');
-      lastScroll = current;
-      return;
-    }
-
-    // Ignore very small scroll deltas to prevent jitter
-    if (Math.abs(current - lastScroll) <= ignoreDelta) {
-      return;
-    }
-
-    // If scrolling down and we've scrolled further than `hideAfter`, hide it
-    if (current > lastScroll && current > hideAfter) {
-      header.classList.add('header--hidden');
-    } else if (current < lastScroll) {
-      // If scrolling up, reveal header
-      header.classList.remove('header--hidden');
-    }
-
-    lastScroll = current;
-  }
-
-  // Use requestAnimationFrame for smoother/performant updates on scroll
-  window.addEventListener('scroll', function () {
-    if (!ticking) {
-      window.requestAnimationFrame(function () {
-        updateHeaderOnScroll();
-        ticking = false;
-      });
-      ticking = true;
-    }
-  }, { passive: true });
-})();
+})();  
