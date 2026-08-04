@@ -3,18 +3,16 @@
  * Handles animations, navigation and interactive elements
  */
 
-// Immediately-invoked Function Expression for encapsulation
 (function () {
   "use strict";
 
-  // DOM elements (update selectors here if you rename HTML)
+  // DOM elements
   const typingEl = document.getElementById("typing");
   const toggle = document.querySelector(".nav-toggle");
   const mobileNav = document.getElementById("mobile-nav");
   const body = document.body;
 
-  // Typing animation configuration
-  // Typing animation config (edit phrases or timing below)
+  // Typing animation phrases
   const PHRASES = [
     "developing responsive websites",
     "optimizing code efficiency",
@@ -25,13 +23,10 @@
     "mastering software engineering",
     "implementing AI solutions",
   ];
-  // Timing (ms): typing, deleting, pause after full phrase
   const TYPING_SPEED = 120;
   const DELETING_SPEED = 80;
   const PAUSE_MS = 1800;
 
-  // Initialize on DOM load
-  // Init modules on DOMContentLoaded
   document.addEventListener("DOMContentLoaded", function () {
     initTypingAnimation();
     initHeroAnimations();
@@ -39,18 +34,15 @@
     initSkillsFilter();
     initPortraitEffects();
     initDockInteraction();
+    initScrollReveal();
   });
 
-  // Typing animation
   function initTypingAnimation() {
     if (!typingEl) return;
 
-    let phraseIdx = 0,
-      charIdx = 0,
-      typingForward = true;
+    let phraseIdx = 0, charIdx = 0, typingForward = true;
 
-  // Typing loop
-  function tickTyping() {
+    function tickTyping() {
       const cur = PHRASES[phraseIdx];
 
       if (typingForward) {
@@ -75,49 +67,25 @@
       setTimeout(tickTyping, typingForward ? TYPING_SPEED : DELETING_SPEED);
     }
 
-    // Start typing
     setTimeout(tickTyping, 800);
   }
-
-  // Hero animations
   function initHeroAnimations() {
-  // Hero animations (respect prefers-reduced-motion)
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      // Just make content visible immediately for users who prefer reduced motion
-      document
-        .querySelectorAll(".hero-content, .hero-text, .hero-portrait")
-        .forEach((el) => {
-          if (el) el.classList.add("visible");
-        });
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion) {
+      document.body.classList.add("hero-ready");
       return;
     }
 
-    const heroContent = document.querySelector(".hero-content");
-    const heroText = document.querySelector(".hero-text");
-    const heroPortrait = document.querySelector(".hero-portrait");
-
-    // Make content visible immediately (as fallback)
-    // and then apply transitions for animation effect
-    if (heroContent) {
-      heroContent.classList.add("visible");
-    }
-
-    if (heroText) {
-      heroText.classList.add("visible");
-    }
-
-    if (heroPortrait) {
-      heroPortrait.classList.add("visible");
-    }
+    requestAnimationFrame(() => {
+      document.body.classList.add("hero-ready");
+    });
   }
 
-  // Navigation toggle
   function initNavToggle() {
-  // Navigation toggle (update selectors above if renamed)
-  if (!toggle || !mobileNav) return;
+    if (!toggle || !mobileNav) return;
 
-  // Toggle mobile nav and manage focus
-  function setOpen(isOpen) {
+    function setOpen(isOpen) {
       toggle.setAttribute("aria-expanded", String(isOpen));
       mobileNav.setAttribute("aria-hidden", String(!isOpen));
 
@@ -136,22 +104,15 @@
       }
     }
 
-    // Close mobile nav when window resizes to desktop width
-    // Close mobile nav on resize (desktop breakpoint = 992px)
     function handleResize() {
       if (window.innerWidth >= 992) {
         setOpen(false);
       }
     }
 
-    // Add resize listener
     window.addEventListener("resize", handleResize);
-
-    // Initial check on page load
     handleResize();
 
-    // Toggle menu
-  // Hamburger click handler
     toggle.addEventListener("click", function (e) {
       e.stopPropagation();
       const isOpen = toggle.getAttribute("aria-expanded") === "true";
@@ -168,8 +129,6 @@
       }
     });
 
-    // Close on outside click
-  // Close on outside click
     document.addEventListener("click", function (e) {
       if (
         toggle.getAttribute("aria-expanded") === "true" &&
@@ -180,23 +139,18 @@
       }
     });
 
-    // Close menu on link click
-    // Close menu when a link is clicked
     mobileNav.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => setOpen(false));
     });
   }
 
-  // Skills filter
   function initSkillsFilter() {
     const cards = Array.from(document.querySelectorAll(".skill-card"));
     const filters = Array.from(document.querySelectorAll(".filter-btn"));
 
-  // Skills filter (edit selectors above if renamed)
-  if (!cards.length || !filters.length) return;
+    if (!cards.length || !filters.length) return;
 
-  // Apply filter
-  function reveal(filter) {
+    function reveal(filter) {
       const shouldShow = (c) =>
         !filter || filter === "all" ? true : c.dataset.category === filter;
 
@@ -226,11 +180,9 @@
     });
   }
 
-  // Portrait hover effects
   function initPortraitEffects() {
     const portraitContainer = document.querySelector(".portrait-container");
-  // Portrait tilt effects
-  if (!portraitContainer) return;
+    if (!portraitContainer) return;
 
     const img = portraitContainer.querySelector(".portrait-img");
     if (!img) return;
@@ -275,8 +227,7 @@
     portraitContainer.addEventListener("mouseleave", reset);
     portraitContainer.addEventListener("touchend", reset);
 
-  // Portrait animation loop (tweak DAMP to change snappiness)
-  function animate() {
+    function animate() {
       current.rx += (target.rx - current.rx) * DAMP;
       current.ry += (target.ry - current.ry) * DAMP;
       current.tx += (target.tx - current.tx) * DAMP;
@@ -299,11 +250,9 @@
     requestAnimationFrame(animate);
   }
 
-  // Dock interaction
   function initDockInteraction() {
     const dock = document.getElementById("dock");
-  // Dock interactions and active-section highlighting
-  if (!dock) return;
+    if (!dock) return;
 
     // Animate dock icons entrance
     const dockIcons = dock.querySelectorAll(".dock-icon");
@@ -345,6 +294,42 @@
     });
     highlightActiveSection();
   }
+
+  // Scroll reveal animations using IntersectionObserver
+  function initScrollReveal() {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    
+    // If user prefers reduced motion, show all elements immediately
+    if (reduceMotion) {
+      document.querySelectorAll(".reveal").forEach((el) => {
+        el.classList.add("visible");
+      });
+      return;
+    }
+
+    const revealElements = document.querySelectorAll(".reveal");
+    
+    if (!revealElements.length) return;
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px 0px -50px 0px",
+      threshold: 0.1,
+    };
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    revealElements.forEach((el) => {
+      revealObserver.observe(el);
+    });
+  }
 })();
 
 (function () {
@@ -364,9 +349,11 @@
 
   // Tweak these to change behavior:
   // - hideAfter: how many pixels down before the header can hide
+  // - showAfter: how close to the top we allow the header to reappear
   // - ignoreDelta: ignore tiny scrolls (helps avoid flicker on touch)
-  const hideAfter = 60; // only start hiding after this many px scrolled down
-  const ignoreDelta = 5; // ignore micro scrolls
+  const hideAfter = 24; // start hiding sooner for a smoother feel
+  const showAfter = 90; // avoid a flash when reversing direction
+  const ignoreDelta = 2; // ignore micro scrolls to reduce jitter
 
   // Prevents content jumping when header is fixed by adding top padding equal
   // to the header height. If you prefer not to set padding, remove this and
@@ -418,11 +405,11 @@
       return;
     }
 
-    // If scrolling down and we've scrolled further than `hideAfter`, hide it
+    // Hide only after a small initial scroll, and reveal only after a little
+    // upward travel so the header eases back in instead of flashing.
     if (current > lastScroll && current > hideAfter) {
       header.classList.add('header--hidden');
-    } else if (current < lastScroll) {
-      // If scrolling up, reveal header
+    } else if (current < lastScroll && (lastScroll - current > 12 || current < showAfter)) {
       header.classList.remove('header--hidden');
     }
 
