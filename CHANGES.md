@@ -1,188 +1,55 @@
-# Portfolio Changes Log
+# Portfolio Changes
 
-## Overview
-This document tracks all changes made to transform the portfolio from an incomplete state into a professional, polished portfolio for a college graduate.
+## Current Architecture
 
----
+- **Section Reordering**: Body is a CSS grid with inline `order` styles. DOM order is Hero → About → Tech Stack → Projects → Experience → Contact → Footer, reflowed to: Hero (0) → About (1) → Tech Stack (2) → Projects (3) → Experience (4) → Contact (6) → Footer (7).
+- **Sticky magic**: `.about-sticky` pins the About content while `.projects-pin-spacer`/`.projects-sticky` pins the Selected Work canvas to the viewport during its scroll room.
 
-## Files Modified
+## Header Theme Detector
 
-### 1. `index.html`
+- **Universal detection**: `data-header-theme` attributes mark light-background sections (`#projects`, `#experience`). A rAF-driven detector in `main.js` samples the scroll position at the header's center and toggles `header--light` across all sections.
+- **Seamless transitions**: Header background, backdrop-filter, box-shadow, brand color, hamburger and nav colors all interpolate over `600ms cubic-bezier(0.16, 1, 0.3, 1)` with a frosted gradient cross-fade for dark→light transitions.
+- **Golden shimmer underline**: The light header retains an animated gold gradient line gliding along the bottom edge.
 
-#### Added
-- **Meta tags**: Description and Open Graph tags for SEO and social sharing
-- **Favicon**: Inline SVG code icon (yellow/amber color matching accent)
-- **Navigation links**: Expanded from 3 to 6 sections (Home, About, Experience, Projects, Skills, Contact)
-- **About section**: 
-  - Professional bio card with role title and location
-  - Info chips showing education, school, achievement, and tech stack
-- **Experience section**:
-  - Timeline design with two roles:
-    1. Full-Stack Web App Developer at Philippine Ports Authority (PPA) — 2025-2026
-    2. Software Developer at Department of Science and Technology (DOST) — 2024-2025
-  - Each with detailed bullet points from resume
-- **Projects section**:
-  - Three project cards with badges:
-    1. IBDMS (Integrated Barangay Document Management System) — Capstone
-    2. PPA Desk Assistance & Attendance Monitoring System — OJT/Immersion
-    3. DOST MSME Support Applications — Government
-  - Technology tags for each project
-- **Skills section**:
-  - Filter buttons (All, Frontend, Backend, Design, Tools)
-  - 24 skill cards with icons organized by category
-- **Contact section**:
-  - Contact cards: email, phone, GitHub, location
-  - Certifications & Achievements list (PHILNITS, Best in Web Development, Amplify S1, EmbraceTheFuture)
-- **Footer**: Copyright and quick navigation links
+## Apple 2026 Liquid Glass UI
 
-#### Fixed
-- Removed broken leftover HTML (`</div></div></section>` and stray `<br />` tags after hero)
-- Removed placeholder Projects section text
+- **Glass Panels**: Project fan cards and experience timeline cards use `backdrop-filter: blur(25px) saturate(140%)` with translucent `rgba(255,255,255,…)` backgrounds.
+- **Glass Borders**: Ultra-thin `1px solid rgba(255,255,255,0.15)` borders with rounded squircle-style corners (28px radii).
+- **Bevel Highlights**: Bright top-edge inner borders `inset 0 1px 0 rgba(255,255,255,0.35)` simulate light catching the glass edge, paired with dynamic soft outer shadows.
+- **Organic Blobs**: Six slowly-drifting radial-gradient blobs (gold/emerald/blue) sit behind the Projects and Experience panels (`lg-blob--1/2/4` in Projects, `lg-blob--5/6` in Experience). Each floats via `lg-blob-float` keyframes.
+- **Page Canvas**: Body uses soft radial gradients + animated `::before`/`::after` layers behind the glass.
 
----
+## Pinned Scroll Transition (Static → Parallax Zoom)
 
-### 2. `style.css`
+1. **Projects pin-spacer**: `220vh` (mobile `340vh`) scroll room.
+2. **Projects-sticky**: `position: sticky; top: 0; height: 100vh` keeps the Selected Work canvas pinned while scrolling.
+3. **Experience overlay**: `margin-top: -100vh; z-index: 5` pulls the Experience section over the pinned projects.
+4. **Zoom/Scale Parallax**: Each `.timeline-item` scales from `0.82 → 1.0` and translates up `70px → 0` as `--exp-progress` goes `0 → 1` (independent `scale`/`translate` properties).
+5. **Frosted reveal**: `.experience` uses `backdrop-filter: blur(6px) saturate(140%)`; `.experience-bg` (off-white, `--exp-progress` opacity, rounded bottom via clip-path) melts in to reveal the cards.
 
-#### Added (~500 lines of new CSS)
-- **About section styles**: Grid layout, card styling, info chips with hover effects
-- **Experience/Timeline styles**: 
-  - Vertical timeline with gradient line
-  - Timeline markers with glow effect
-  - Timeline cards with hover states
-- **Projects section styles**:
-  - Responsive grid layout
-  - Project cards with badges, tech tags
-  - Hover lift effects
-- **Contact section styles**:
-  - Contact card grid
-  - Certifications section styling
-- **Footer styles**: Two-column layout, link hover effects
-- **Scroll reveal animations**: `.reveal` and `.visible` classes with transitions
-- **Additional skill card colors**: TypeScript, C#, API, UI/UX, Figma, Premiere Pro, Responsive Design
+## Scroll-Driven Effects
 
----
+- **Hero → About motion**: `--hero-progress` drives the hero content upward, scales it down slightly, and applies blur + fade as it scrolls away.
+- **Tech stack heading**: `initTechstackMotion` in `main.js` splits the heading into `.tw` word spans and staggers them in with translate/blur/opacity via IntersectionObserver.
+- **Brand ticker**: Auto-scrolling `tech-brand-track` ribbon with a duplicated item set for a seamless `translateX(-50%)` loop.
+- **Scroll reveal**: `.reveal` elements blur-to-sharp pop in with staggered delays (`--reveal-delay` set by JS).
+- **Text motion**: `.about-big-word` and `.about-bio` get a soft rise + de-blur entrance via `.text-motion` / `.text-motion-in`.
 
-### 3. `main.js`
+## Projects Section
 
-#### Added
-- **`initScrollReveal()` function**: 
-  - Uses IntersectionObserver for performant scroll animations
-  - Respects `prefers-reduced-motion` media query
-  - Reveals elements with `.reveal` class when they enter viewport
-- **Call to `initScrollReveal()`** in DOMContentLoaded handler
+- **Design**: White-themed section matching the Liquid Glass screenshot.
+- **Features**: Filter tabs (All, Real Project, Exploration), "View full portfolio" link, and a fan carousel rendered by `main.js` (`initProjectsSection`).
+- **Layout**: `fan-track` horizontal spread with rotated side cards; drag/swipe via `initFanCarousel`.
+- **Mobile**: Horizontal snap-scrolling inside the pinned canvas (`76vw` cards, `340vh` spacer).
 
----
+## Accessibility
 
-## Content Source
+- Sections carry `data-header-theme` for automatic header color switching.
+- `prefers-reduced-motion` disables animations (global `* { animation-duration… }` override, `.reveal`, `.text-motion`, hero intro, hero→about transition, and landing snap).
 
-All professional content (experience descriptions, project details, education, certifications) was extracted directly from `assets/Resume_Valiente.pdf`:
+## Performance
 
-- **Name**: Mathew L. Valiente
-- **Role**: Junior Software Engineer
-- **Education**: BS Information Technology, DMC College Foundation Inc. (2023-2026)
-- **Technologies**: PHP, Laravel, JavaScript, TypeScript, React, MySQL, Tailwind CSS, C#
-- **Experience**: PPA (2025-2026), DOST (2024-2025)
-- **Projects**: IBDMS, PPA Attendance System, DOST MSME Apps
-
----
-
-## Files Unchanged
-
-The following files were reviewed but required no cleanup:
-- `Profile.jpg` — Profile photo
-- `assets/Resume_Valiente.pdf` — Source resume
-
----
-
-## File Structure (Final)
-
-```
-Portfolio/
-├── .DS_Store          # macOS system file (can be gitignored)
-├── index.html         # Main HTML (fully updated)
-├── main.js            # JavaScript (added scroll reveal)
-├── Profile.jpg        # Profile photo
-├── style.css          # Styles (added ~500 lines)
-├── assets/
-│   └── Resume_Valiente.pdf  # Source resume
-└── CHANGES.md         # This file
-```
-
----
-
-## Recommendations for Future Enhancements
-
-1. **Project Screenshots**: Add actual project images to each project card
-2. **Live Demo Links**: Add GitHub/demo links to projects
-3. **Blog/Articles**: Consider adding a blog section for technical writing
-4. **Testimonials**: Add quotes from supervisors or colleagues
-5. **Analytics**: Add privacy-respecting analytics (e.g., Plausible)
-
----
-
-## Magic UI Cleanup (August 4, 2026)
-
-### CSS Cleaned (~1839 lines → ~600 lines)
-- Removed complex layered background gradients
-- Removed redundant animation keyframes
-- Removed duplicate CSS rules
-- Removed unused skill color definitions
-- Simplified hover effects
-- Clean minimal design with CSS variables
-- Pure dark background (#0a0a0a) without gradient noise
-
-### JavaScript Cleaned (~200 lines → ~145 lines)
-- Removed portrait 3D tilt effects (simplified to clean circle)
-- Removed dock magnify animation
-- Consolidated functions
-- Added header auto-hide on scroll
-- Cleaner, more readable code structure
-
-### Design Philosophy (Magic UI Inspired)
-- Clean, minimal surfaces (#111111)
-- Subtle borders (#222222)
-- Accent color for highlights (#fbbf24)
-- No decorative gradients or shadows
-- Focus on content over decoration
-- Simple, functional hover states
-- Maximum readability
-
----
-
-## Mobile Responsive & Code Cleanup (August 4, 2026)
-
-### CSS Improvements
-- **Removed unused skill colors**: vue, sass, mongodb, firebase, express, python (not present in HTML)
-- **Added comprehensive mobile responsive styles**:
-  - Phones (max 480px): Reduced header size, smaller portrait, full-width buttons, 2-column skills grid
-  - Small phones (max 360px): Even smaller fonts, single-column skills, adjusted padding
-  - Tablets (481px-767px): Intermediate sizing adjustments
-  - Landscape phones: Hides portrait image, centers content
-- **Mobile performance optimizations**:
-  - Disabled background drift animation on mobile
-  - Reduced brand slider animation duration
-  - Removed hover transforms on touch devices
-  - Scaled down dock navigation (90% on tablets)
-- **Key mobile adjustments**:
-  - Container padding reduced from 32px to 20px
-  - Header height reduced from 70px to 56px
-  - Portrait width reduced to 85% (max 240px)
-  - Section titles and fonts scaled appropriately
-  - Timeline and project cards optimized for narrow screens
-
-### JavaScript Cleanup
-- Removed redundant/duplicate comments
-- Cleaned up function documentation
-- Consolidated inline comments
-- Improved code readability
-
-### Design Philosophy (Preserved)
-- All original animations maintained (typing, scroll reveal, hero entrance)
-- Design aesthetic unchanged
-- Only sizes and spacing adjusted for mobile comfort
-
----
-
-## Date
-
-Changes completed: August 4, 2026
+- Scroll-driven values are set with `requestAnimationFrame` throttling where needed.
+- CSS uses compositor-friendly transforms and independent `scale`/`translate` properties.
+- `background-attachment: fixed` is intentionally removed from `body` to avoid repaint jank on macOS Safari/Chrome.
+- No heavy per-frame parallax on the main content; the hero parallax layers and blobs are transform/opacity only.

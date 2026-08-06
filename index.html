@@ -1,480 +1,657 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mathew Valiente — Software Engineer</title>
+    <meta
+      name="description"
+      content="Portfolio of Mathew Valiente, a versatile full-stack software engineer specializing in Laravel, React, TypeScript, and modern web applications."
+    />
+    <meta property="og:title" content="Mathew Valiente — Software Engineer" />
+    <meta
+      property="og:description"
+      content="Full-stack software engineer building modern, scalable web applications with Laravel, React, TypeScript, and MySQL."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="Profile.jpg" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fbbf24'%3E%3Cpath d='M8 3l-8 9 8 9 3-3-6-6 6-6-3-3zm8 0l-3 3 6 6-6 6 3 3 8-9-8-9z'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mathew Valiente — Software Engineer</title>
-  <meta name="description"
-    content="Portfolio of Mathew Valiente, a versatile full-stack software engineer specializing in Laravel, React, TypeScript, and modern web applications." />
-  <meta property="og:title" content="Mathew Valiente — Software Engineer" />
-  <meta property="og:description"
-    content="Full-stack software engineer building modern, scalable web applications with Laravel, React, TypeScript, and MySQL." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="Profile.jpg" />
-  <link rel="icon"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fbbf24'%3E%3Cpath d='M8 3l-8 9 8 9 3-3-6-6 6-6-3-3zm8 0l-3 3 6 6-6 6 3 3 8-9-8-9z'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="style.css" />
-  <!-- Font Awesome for skill icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-</head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen" aria-hidden="true">
+      <div class="loading-content">
+        <!-- Minimalist white cat icon with cute bounce -->
+        <svg
+          class="loading-cat"
+          viewBox="0 0 64 64"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M14 26 L10 12 L24 20" />
+          <path d="M50 26 L54 12 L40 20" />
+          <circle cx="32" cy="32" r="16" />
+          <circle
+            class="loading-eyes"
+            cx="26"
+            cy="30"
+            r="1.8"
+            fill="currentColor"
+            stroke="none"
+          />
+          <circle
+            class="loading-eyes"
+            cx="38"
+            cy="30"
+            r="1.8"
+            fill="currentColor"
+            stroke="none"
+          />
+          <path d="M32 34 h-3 l3 -3 l3 3 z" fill="currentColor" stroke="none" />
+          <path class="loading-whisker" d="M13 32 L22 33" />
+          <path class="loading-whisker" d="M10 36 L21 35" />
+          <path class="loading-whisker" d="M51 32 L42 33" />
+          <path class="loading-whisker" d="M54 36 L43 35" />
+        </svg>
+        <p class="loading-quote">
+          &ldquo;Building something great takes time.&rdquo;
+        </p>
+        <div class="loading-number" id="loading-number">0%</div>
+        <div
+          class="loading-bar"
+          role="progressbar"
+          aria-label="Page loading progress"
+        >
+          <div class="loading-bar-fill" id="loading-bar-fill"></div>
+        </div>
+      </div>
+    </div>
 
-<body>
-  <header id="top" class="site-header" role="banner">
-    <div class="header-inner container">
-      <div class="brand">Mat-devx</div>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Toggle navigation">
-        <span class="hamburger-icon">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </span>
-      </button>
-      <nav class="site-nav desktop-nav" aria-label="Primary">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#experience">Experience</a>
-        <a href="#projects">Projects</a>
-        <a href="#skills">Skills</a>
-        <a href="#contact">Contact</a>
+    <header id="top" class="site-header" role="banner">
+      <div class="header-inner container">
+        <div class="brand">Mat-devx</div>
+        <button
+          class="nav-toggle"
+          aria-expanded="false"
+          aria-controls="mobile-nav"
+          aria-label="Toggle navigation"
+        >
+          <span class="hamburger-icon">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </span>
+        </button>
+        <div class="settings-panel" id="settings-panel" hidden>
+          <button class="settings-option" id="settings-reduce-motion">
+            <i class="fas fa-eye" aria-hidden="true"></i>
+            <span>Reduce motion</span>
+          </button>
+          <a class="settings-option" href="#top">
+            <i class="fas fa-arrow-up" aria-hidden="true"></i>
+            <span>Back to top</span>
+          </a>
+        </div>
+
+        <div id="mobile-nav" class="mobile-nav" aria-hidden="true">
+          <a href="#home">Home</a>
+          <a href="#about">About</a>
+          <a href="#projects">Projects</a>
+          <a href="#experience">Experience</a>
+          <a href="#skills">Skills</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="hero" id="home">
+      <!-- Hero parallax background (0.3x scroll speed) -->
+      <div class="hero-parallax-bg" data-speed="0.3" aria-hidden="true"></div>
+      <!-- Ambient neon spheres for mouse-based parallax -->
+      <div class="hero-sphere hero-sphere--1" aria-hidden="true"></div>
+      <div class="hero-sphere hero-sphere--2" aria-hidden="true"></div>
+      <div class="hero-sphere hero-sphere--3" aria-hidden="true"></div>
+      <!-- Layered parallax cards -->
+      <div class="parallax-cards" aria-hidden="true">
+        <div class="parallax-card" data-speed="0.1">
+          <div class="parallax-card-inner"></div>
+        </div>
+        <div class="parallax-card" data-speed="0.25">
+          <div class="parallax-card-inner"></div>
+        </div>
+        <div class="parallax-card" data-speed="0.45">
+          <div class="parallax-card-inner"></div>
+        </div>
+      </div>
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="greeting">
+              Hey, I'm
+              <span class="name">Mathew Valiente</span>
+            </h1>
+            <p class="subtitle">
+              Versatile Software Engineer passionate about building innovative
+              software solutions, continuously learning new technologies, and
+              adapting to the ever-evolving field of software engineering.
+            </p>
+
+            <div class="code-line" aria-hidden="true">
+              <span class="code-prefix"><</span>
+              <span id="typing" class="typing"></span>
+              <span class="code-suffix">/></span>
+            </div>
+            <div class="cta-row">
+              <a class="btn-primary" href="#projects">View Projects</a>
+              <a
+                href="assets/Resume_Valiente.pdf"
+                download="Mathew_Valiente_Resume.pdf"
+                class="btn-ghost"
+              >
+                <i class="fas fa-download"></i>
+                Resume
+              </a>
+            </div>
+          </div>
+          <div class="hero-portrait" aria-label="Profile photo mockup">
+            <div class="portrait-container">
+              <img
+                class="portrait-img"
+                src="Profile.jpg"
+                alt="Portrait of Mathew Valiente"
+                loading="eager"
+                decoding="async"
+              />
+              <div class="portrait-ring" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- About — second section, directly after hero -->
+    <section id="about" class="about" aria-label="About" style="order: 1">
+      <div class="about-fixed-bg" aria-hidden="true"></div>
+      <div class="about-sticky" aria-hidden="false">
+        <div class="about-left">
+          <div class="about-text-layer">
+            <div class="about-word-group">
+              <span class="about-big-word word-white">DEFINE</span>
+              <div class="about-word-hover-content">
+                <p class="hover-label">What I do</p>
+                <p class="hover-heading">Hey, I'm<br><span class="hover-name">Mathew Valiente</span></p>
+                <p class="hover-text">Versatile Software Engineer passionate about building innovative software solutions, continuously learning new technologies, and adapting to the ever-evolving field of software engineering.</p>
+              </div>
+            </div>
+            <div class="about-word-group">
+              <span class="about-big-word word-muted">DESIGN</span>
+              <div class="about-word-hover-content">
+                <p class="hover-label">How I work</p>
+                <p class="hover-text">Mockup — Design system and interface exploration coming soon.</p>
+              </div>
+            </div>
+            <div class="about-word-group">
+              <span class="about-big-word word-dim">DELIVER</span>
+              <div class="about-word-hover-content">
+                <p class="hover-label">What I ship</p>
+                <p class="hover-text">Mockup — Project delivery and results showcase coming soon.</p>
+              </div>
+            </div>
+          </div>
+          <div class="about-details">
+            <p class="about-bio">
+              Versatile software engineer building modern, scalable web
+              applications, continuously learning new technologies and adapting
+              to modern software development practices. Experienced in
+              full-stack development through hands-on work with government
+              agencies and a capstone project that digitizes barangay document
+              workflows.
+            </p>
+          </div>
+        </div>
+        <div class="about-portrait">
+          <div class="about-portrait-card">
+            <div class="about-mockup-avatar" aria-hidden="true">
+              <svg
+                viewBox="0 0 200 200"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient
+                    id="avatarBg"
+                    x1="0"
+                    y1="0"
+                    x2="200"
+                    y2="200"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#1e1b4b" />
+                    <stop offset="1" stop-color="#312e81" />
+                  </linearGradient>
+                  <linearGradient
+                    id="avatarGlow"
+                    x1="50"
+                    y1="50"
+                    x2="150"
+                    y2="150"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="#818cf8" stop-opacity="0.3" />
+                    <stop offset="1" stop-color="#a78bfa" stop-opacity="0.1" />
+                  </linearGradient>
+                </defs>
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="96"
+                  fill="url(#avatarBg)"
+                  stroke="url(#avatarGlow)"
+                  stroke-width="2"
+                />
+                <circle cx="100" cy="78" r="32" fill="#334155" />
+                <ellipse cx="100" cy="150" rx="48" ry="36" fill="#334155" />
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="96"
+                  fill="url(#avatarGlow)"
+                  opacity="0.5"
+                />
+              </svg>
+            </div>
+            <div class="about-mockup-card-ui">
+              <div class="mockup-bar">
+                <span class="mockup-dot mockup-dot--red"></span>
+                <span class="mockup-dot mockup-dot--yellow"></span>
+                <span class="mockup-dot mockup-dot--green"></span>
+              </div>
+              <div class="mockup-content">
+                <div class="mockup-line mockup-line--name"></div>
+                <div class="mockup-line mockup-line--role"></div>
+                <div class="mockup-line mockup-line--short"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section id="techstack" class="techstack" aria-label="Tech Stack" data-header-theme="dark" style="order: 2">
+      <div class="container techstack-container">
+        <div class="techstack-text">
+          <span class="section-eyebrow reveal">BUILT WITH</span>
+          <h2 class="techstack-heading reveal">A Modern, Production-Grade Stack</h2>
+          <p class="techstack-sub reveal">The same frameworks and infrastructure trusted by the best teams in tech, so your product launches fast, scales effortlessly, and never feels outdated.</p>
+
+          <!-- Brand ticker — auto-scrolling horizontal ribbon -->
+          <div class="tech-brand-ribbon reveal" aria-label="Technologies used">
+            <div class="tech-brand-track">
+              <div class="tech-brand-item" data-brand="html5"><i class="fab fa-html5"></i><span>HTML5</span></div>
+              <div class="tech-brand-item" data-brand="css3"><i class="fab fa-css3-alt"></i><span>CSS3</span></div>
+              <div class="tech-brand-item" data-brand="javascript"><i class="fab fa-js-square"></i><span>JavaScript</span></div>
+              <div class="tech-brand-item" data-brand="react"><i class="fab fa-react"></i><span>React</span></div>
+              <div class="tech-brand-item" data-brand="bootstrap"><i class="fab fa-bootstrap"></i><span>Bootstrap</span></div>
+              <div class="tech-brand-item" data-brand="tailwind"><i class="fas fa-wind"></i><span>Tailwind</span></div>
+              <div class="tech-brand-item" data-brand="nodejs"><i class="fab fa-node-js"></i><span>Node.js</span></div>
+              <div class="tech-brand-item" data-brand="php"><i class="fab fa-php"></i><span>PHP</span></div>
+              <div class="tech-brand-item" data-brand="laravel"><i class="fab fa-laravel"></i><span>Laravel</span></div>
+              <div class="tech-brand-item" data-brand="mysql"><i class="fas fa-database"></i><span>MySQL</span></div>
+              <div class="tech-brand-item" data-brand="git"><i class="fab fa-git-alt"></i><span>Git</span></div>
+              <div class="tech-brand-item" data-brand="github"><i class="fab fa-github"></i><span>GitHub</span></div>
+              <div class="tech-brand-item" data-brand="vscode"><i class="fas fa-code"></i><span>VS Code</span></div>
+              <div class="tech-brand-item" data-brand="npm"><i class="fab fa-npm"></i><span>NPM</span></div>
+              <div class="tech-brand-item" data-brand="docker"><i class="fab fa-docker"></i><span>Docker</span></div>
+              <div class="tech-brand-item" data-brand="terminal"><i class="fas fa-terminal"></i><span>Terminal</span></div>
+              <!-- Duplicate items for seamless loop -->
+              <div class="tech-brand-item" data-brand="html5"><i class="fab fa-html5"></i><span>HTML5</span></div>
+              <div class="tech-brand-item" data-brand="css3"><i class="fab fa-css3-alt"></i><span>CSS3</span></div>
+              <div class="tech-brand-item" data-brand="javascript"><i class="fab fa-js-square"></i><span>JavaScript</span></div>
+              <div class="tech-brand-item" data-brand="react"><i class="fab fa-react"></i><span>React</span></div>
+              <div class="tech-brand-item" data-brand="bootstrap"><i class="fab fa-bootstrap"></i><span>Bootstrap</span></div>
+              <div class="tech-brand-item" data-brand="tailwind"><i class="fas fa-wind"></i><span>Tailwind</span></div>
+              <div class="tech-brand-item" data-brand="nodejs"><i class="fab fa-node-js"></i><span>Node.js</span></div>
+              <div class="tech-brand-item" data-brand="php"><i class="fab fa-php"></i><span>PHP</span></div>
+              <div class="tech-brand-item" data-brand="laravel"><i class="fab fa-laravel"></i><span>Laravel</span></div>
+              <div class="tech-brand-item" data-brand="mysql"><i class="fas fa-database"></i><span>MySQL</span></div>
+              <div class="tech-brand-item" data-brand="git"><i class="fab fa-git-alt"></i><span>Git</span></div>
+              <div class="tech-brand-item" data-brand="github"><i class="fab fa-github"></i><span>GitHub</span></div>
+              <div class="tech-brand-item" data-brand="vscode"><i class="fas fa-code"></i><span>VS Code</span></div>
+              <div class="tech-brand-item" data-brand="npm"><i class="fab fa-npm"></i><span>NPM</span></div>
+              <div class="tech-brand-item" data-brand="docker"><i class="fab fa-docker"></i><span>Docker</span></div>
+              <div class="tech-brand-item" data-brand="terminal"><i class="fas fa-terminal"></i><span>Terminal</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="section-divider" aria-hidden="true"></div>
+    </section>
+
+    <!-- Projects — Selected Work (pinned Liquid Glass canvas) -->
+    <section id="projects" class="projects" aria-label="Projects" data-header-theme="light" style="order: 3">
+      <div class="projects-pin-spacer">
+        <div class="projects-sticky">
+          <div class="lg-blob lg-blob--1" aria-hidden="true"></div>
+          <div class="lg-blob lg-blob--2" aria-hidden="true"></div>
+          <div class="lg-blob lg-blob--4" aria-hidden="true"></div>
+          <div class="container projects-container">
+        <span class="section-eyebrow reveal">PORTFOLIO</span>
+        <h2 class="projects-heading reveal">Built for every project</h2>
+        <p class="projects-sub reveal">Real projects for real clients, from government systems to full-stack platforms and everything in between.</p>
+
+        <div class="projects-controls reveal">
+          <div class="project-filters" role="group" aria-label="Filter projects">
+            <button class="project-filter-btn active" data-pfilter="all">All</button>
+            <button class="project-filter-btn" data-pfilter="real">Real Project</button>
+            <button class="project-filter-btn" data-pfilter="exploration">Exploration</button>
+          </div>
+          <a href="https://github.com/mat-devx" target="_blank" rel="noopener noreferrer" class="view-all-link">
+            View full portfolio <i class="fas fa-arrow-up-right" aria-hidden="true"></i>
+          </a>
+        </div>
+
+            <!-- Fan Carousel -->
+            <div class="fan-carousel">
+              <div class="fan-track" id="projects-grid">
+                <!-- Fan cards rendered by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="experience" aria-label="Experience" data-header-theme="light" style="order: 4">
+      <div class="experience-bg" aria-hidden="true"></div>
+
+      <!-- Vibrant organic liquid-glass gradient blobs -->
+      <div class="lg-blob lg-blob--5" aria-hidden="true"></div>
+      <div class="lg-blob lg-blob--6" aria-hidden="true"></div>
+
+      <div class="container experience-container">
+        <h2 class="section-title">Experience</h2>
+        <div class="timeline">
+          <article class="timeline-item reveal">
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3>Full-Stack Web App Developer</h3>
+                  <p class="timeline-org">
+                    Philippine Ports Authority (PPA) · Dapitan City
+                  </p>
+                </div>
+                <span class="timeline-date">2025 – 2026</span>
+              </div>
+              <ul class="timeline-list">
+                <li>
+                  Developed a web-based PPA Desk Assistance and Attendance
+                  Monitoring System that automated Time In/Time Out recording,
+                  attendance tracking, and duty-hour computation for OJT and
+                  immersion personnel.
+                </li>
+                <li>
+                  Built secure backend services and responsive user interfaces
+                  using Laravel, React, TypeScript, MySQL, Inertia.js, and
+                  Tailwind CSS.
+                </li>
+                <li>
+                  Partnered with PPA staff to translate operational requirements
+                  into technical solutions, incorporating stakeholder feedback
+                  throughout development.
+                </li>
+                <li>
+                  Contributed to system architecture, debugging, testing,
+                  database design, and deployment while collaborating with a
+                  multidisciplinary student development team.
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="timeline-item reveal">
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3>Software Developer</h3>
+                  <p class="timeline-org">
+                    Department of Science and Technology (DOST) · Dipolog City
+                  </p>
+                </div>
+                <span class="timeline-date">2024 – 2025</span>
+              </div>
+              <ul class="timeline-list">
+                <li>
+                  Developed web-based applications supporting DOST programs that
+                  assist micro, small, and medium enterprises (MSMEs) through
+                  business assessment and administrative workflows.
+                </li>
+                <li>
+                  Collaborated with project stakeholders to analyze requirements
+                  and design software solutions aligned with program objectives.
+                </li>
+                <li>
+                  Automated business processes by digitizing records,
+                  application workflows, and data management, improving
+                  operational efficiency and reducing manual work.
+                </li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact / Let's Work Together -->
+    <section id="contact" class="contact" aria-label="Contact" style="order: 6">
+      <div class="container">
+        <div class="contact-layout">
+          <div class="contact-left">
+            <h2 class="contact-heading">Let's Work Together</h2>
+            <p class="contact-sub">
+              If you're interested in working together, please<br />leave a
+              message.
+            </p>
+            <div class="contact-socials">
+              <a
+                href="https://github.com/mat-devx"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
+                <i class="fab fa-github"></i>
+              </a>
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+              >
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a href="mailto:mathewvaliente20@gmail.com" aria-label="Email">
+                <i class="fas fa-envelope"></i>
+              </a>
+              <a href="tel:+639635874733" aria-label="Phone">
+                <i class="fas fa-phone"></i>
+              </a>
+            </div>
+          </div>
+          <form
+            class="contact-form"
+            id="contact-form"
+            aria-label="Contact form"
+          >
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              required
+              aria-label="Name"
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+              aria-label="Email"
+            />
+            <textarea
+              name="message"
+              placeholder="Your Message"
+              rows="4"
+              required
+              aria-label="Your Message"
+            ></textarea>
+            <button type="submit" class="contact-send-btn">
+              Send me a message
+              <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer — compact glassmorphism bar -->
+    <footer class="site-footer" aria-label="Footer">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <span class="footer-copy">&copy; 2026 Mathew Valiente</span>
+        </div>
+        <div class="footer-socials">
+          <a
+            href="https://github.com/mat-devx"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+          >
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="mailto:mathewvaliente20@gmail.com" aria-label="Email">
+            <i class="fas fa-envelope"></i>
+          </a>
+          <a href="tel:+639635874733" aria-label="Phone">
+            <i class="fas fa-phone"></i>
+          </a>
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+          >
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Fixed center dock: Skills, GitHub portfolio, Email -->
+    <div class="dock-wrapper" id="dock-wrapper" aria-hidden="false">
+      <nav class="dock" id="dock" aria-label="Site quick links">
+        <a
+          href="#projects"
+          class="dock-icon"
+          data-tooltip="Projects"
+          aria-label="View projects section"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+            />
+          </svg>
+          <div class="tooltip" aria-hidden="true">Projects</div>
+        </a>
+
+        <a
+          href="#skills"
+          class="dock-icon"
+          data-tooltip="Skills"
+          aria-label="View skills section"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <div class="tooltip" aria-hidden="true">Skills</div>
+        </a>
+        <a
+          href="https://github.com/mat-devx"
+          class="dock-icon"
+          data-tooltip="Portfolio (GitHub)"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open portfolio on GitHub"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.38 7.86 10.9.57.1.78-.25.78-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.27-1.68-1.27-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.72-1.54-2.56-.29-5.26-1.28-5.26-5.69 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.02 0 0 .97-.31 3.18 1.17.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.48 3.17-1.17 3.17-1.17.62 1.57.23 2.73.11 3.02.74.8 1.18 1.82 1.18 3.07 0 4.42-2.71 5.39-5.29 5.67.41.36.77 1.08.77 2.18 0 1.58-.01 2.86-.01 3.25 0 .31.21.66.79.55C20.71 21.38 24 17.08 24 12c0-6.27-5.23-11.5-12-11.5z"
+            />
+          </svg>
+          <div class="tooltip" aria-hidden="true">Portfolio</div>
+        </a>
+        <!-- NOTE: replace the email below with your real address if needed -->
+        <a
+          href="mailto:mathewvaliente20@gmail.com"
+          class="dock-icon"
+          data-tooltip="Contact (Email)"
+          aria-label="Send an email"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path
+              d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+            />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
+          <div class="tooltip" aria-hidden="true">Email</div>
+        </a>
       </nav>
-      <div id="mobile-nav" class="mobile-nav" aria-hidden="true">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#experience">Experience</a>
-        <a href="#projects">Projects</a>
-        <a href="#skills">Skills</a>
-        <a href="#contact">Contact</a>
-      </div>
     </div>
-  </header>
 
-  <main class="hero" id="home">
-    <div class="container hero-inner">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1 class="greeting">
-            Hey, I'm
-            <span class="name">Mathew Valiente</span>
-          </h1>
-          <p class="subtitle">
-            Versatile Software Engineer passionate about building innovative software solutions,
-            continuously learning new technologies, and adapting to the ever-evolving field of software engineering.
-          </p>
-
-          <!-- Brands Section -->
-          <section id="brands" class="brands" aria-label="Brand links">
-            <div class="brand-slider">
-              <div class="brand-track">
-                <div class="brand-item" data-brand="html5" aria-label="HTML5">
-                  <i class="fab fa-html5"></i>
-                  <span class="brand-label">HTML5</span>
-                </div>
-                <div class="brand-item" data-brand="css3" aria-label="CSS3">
-                  <i class="fab fa-css3-alt"></i>
-                  <span class="brand-label">CSS3</span>
-                </div>
-                <div class="brand-item" data-brand="javascript" aria-label="JavaScript">
-                  <i class="fab fa-js-square"></i>
-                  <span class="brand-label">JavaScript</span>
-                </div>
-                <div class="brand-item" data-brand="react" aria-label="React">
-                  <i class="fab fa-react"></i>
-                  <span class="brand-label">React</span>
-                </div>
-                <div class="brand-item" data-brand="bootstrap" aria-label="Bootstrap">
-                  <i class="fab fa-bootstrap"></i>
-                  <span class="brand-label">Bootstrap</span>
-                </div>
-                <div class="brand-item" data-brand="tailwind" aria-label="Tailwind CSS">
-                  <i class="fas fa-wind"></i>
-                  <span class="brand-label">Tailwind</span>
-                </div>
-                <div class="brand-item" data-brand="nodejs" aria-label="Node.js">
-                  <i class="fab fa-node-js"></i>
-                  <span class="brand-label">Node.js</span>
-                </div>
-                <div class="brand-item" data-brand="php" aria-label="PHP">
-                  <i class="fab fa-php"></i>
-                  <span class="brand-label">PHP</span>
-                </div>
-                <div class="brand-item" data-brand="laravel" aria-label="Laravel">
-                  <i class="fab fa-laravel"></i>
-                  <span class="brand-label">Laravel</span>
-                </div>
-                <div class="brand-item" data-brand="mysql" aria-label="MySQL">
-                  <i class="fas fa-database"></i>
-                  <span class="brand-label">MySQL</span>
-                </div>
-                <div class="brand-item" data-brand="git" aria-label="Git">
-                  <i class="fab fa-git-alt"></i>
-                  <span class="brand-label">Git</span>
-                </div>
-                <div class="brand-item" data-brand="github" aria-label="GitHub">
-                  <i class="fab fa-github"></i>
-                  <span class="brand-label">GitHub</span>
-                </div>
-                <div class="brand-item" data-brand="vscode" aria-label="VS Code">
-                  <i class="fas fa-code"></i>
-                  <span class="brand-label">VS Code</span>
-                </div>
-                <div class="brand-item" data-brand="npm" aria-label="NPM">
-                  <i class="fab fa-npm"></i>
-                  <span class="brand-label">NPM</span>
-                </div>
-                <div class="brand-item" data-brand="docker" aria-label="Docker">
-                  <i class="fab fa-docker"></i>
-                  <span class="brand-label">Docker</span>
-                </div>
-                <div class="brand-item" data-brand="terminal" aria-label="Terminal">
-                  <i class="fas fa-terminal"></i>
-                  <span class="brand-label">Terminal</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <div class="code-line" aria-hidden="true">
-            <span class="code-prefix"><</span>
-            <span id="typing" class="typing"></span>
-            <span class="code-suffix">/></span>
-          </div>
-          <div class="cta-row">
-            <a class="btn-primary" href="#projects">View Projects</a>
-            <a href="assets/Resume_Valiente.pdf" download="Mathew_Valiente_Resume.pdf" class="btn-ghost">
-              <i class="fas fa-download"></i>
-              Resume
-            </a>
-          </div>
-        </div>
-        <div class="hero-portrait" aria-label="Profile photo mockup">
-          <div class="portrait-container">
-            <img class="portrait-img" src="Profile.jpg" alt="Portrait of Mathew Valiente" loading="eager"
-              decoding="async" />
-            <div class="portrait-ring" aria-hidden="true"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- About -->
-  <section id="about" class="about" aria-label="About">
-    <div class="container">
-      <h2 class="section-title">About Me</h2>
-      <div class="about-grid">
-        <div class="about-card reveal">
-          <div class="about-heading">
-            <i class="fas fa-code about-icon" aria-hidden="true"></i>
-            <div>
-              <h3>Junior Software Engineer</h3>
-              <p class="about-location">Dipolog City, Philippines</p>
-            </div>
-          </div>
-          <p class="about-bio">
-            Versatile software engineer building modern, scalable web applications, continuously learning new
-            technologies and adapting to modern software development practices. Experienced in full-stack development
-            through hands-on work with government agencies and a capstone project that digitizes barangay document
-            workflows.
-          </p>
-        </div>
-        <div class="about-details reveal">
-          <div class="info-chip">
-            <i class="fas fa-graduation-cap" aria-hidden="true"></i>
-            <span>BS Information Technology · 2026</span>
-          </div>
-          <div class="info-chip">
-            <i class="fas fa-university" aria-hidden="true"></i>
-            <span>DMC College Foundation Inc.</span>
-          </div>
-          <div class="info-chip">
-            <i class="fas fa-trophy" aria-hidden="true"></i>
-            <span>Best in Web Development</span>
-          </div>
-          <div class="info-chip">
-            <i class="fas fa-laptop-code" aria-hidden="true"></i>
-            <span>Laravel · React · TypeScript · MySQL</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Experience -->
-  <section id="experience" class="experience" aria-label="Experience">
-    <div class="container">
-      <h2 class="section-title">Experience</h2>
-      <div class="timeline">
-        <article class="timeline-item reveal">
-          <div class="timeline-marker" aria-hidden="true"></div>
-          <div class="timeline-card">
-            <div class="timeline-header">
-              <div>
-                <h3>Full-Stack Web App Developer</h3>
-                <p class="timeline-org">Philippine Ports Authority (PPA) · Dapitan City</p>
-              </div>
-              <span class="timeline-date">2025 – 2026</span>
-            </div>
-            <ul class="timeline-list">
-              <li>Developed a web-based PPA Desk Assistance and Attendance Monitoring System that automated Time In/Time Out recording, attendance tracking, and duty-hour computation for OJT and immersion personnel.</li>
-              <li>Built secure backend services and responsive user interfaces using Laravel, React, TypeScript, MySQL, Inertia.js, and Tailwind CSS.</li>
-              <li>Partnered with PPA staff to translate operational requirements into technical solutions, incorporating stakeholder feedback throughout development.</li>
-              <li>Contributed to system architecture, debugging, testing, database design, and deployment while collaborating with a multidisciplinary student development team.</li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="timeline-item reveal">
-          <div class="timeline-marker" aria-hidden="true"></div>
-          <div class="timeline-card">
-            <div class="timeline-header">
-              <div>
-                <h3>Software Developer</h3>
-                <p class="timeline-org">Department of Science and Technology (DOST) · Dipolog City</p>
-              </div>
-              <span class="timeline-date">2024 – 2025</span>
-            </div>
-            <ul class="timeline-list">
-              <li>Developed web-based applications supporting DOST programs that assist micro, small, and medium enterprises (MSMEs) through business assessment and administrative workflows.</li>
-              <li>Collaborated with project stakeholders to analyze requirements and design software solutions aligned with program objectives.</li>
-              <li>Automated business processes by digitizing records, application workflows, and data management, improving operational efficiency and reducing manual work.</li>
-            </ul>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projects -->
-  <section id="projects" class="projects" aria-label="Projects">
-    <div class="container">
-      <h2 class="section-title">Projects</h2>
-      <div class="projects-grid">
-        <article class="project-card reveal">
-          <div class="project-header">
-            <div class="project-title">
-              <i class="fas fa-folder-open project-icon" aria-hidden="true"></i>
-              <h3>Integrated Barangay Document Management System (IBDMS)</h3>
-            </div>
-            <span class="project-badge">Capstone</span>
-          </div>
-          <p class="project-short">
-            Full-stack web application that digitizes barangay document processing, resident management, and
-            administrative workflows.
-          </p>
-          <ul class="project-list">
-            <li>Architected and developed the system using Laravel, React, TypeScript, MySQL, Inertia.js, and Tailwind CSS.</li>
-            <li>Engineered secure authentication, role-based authorization, document approval workflows, PDF generation, and QR-based document verification.</li>
-            <li>Designed scalable database models, RESTful APIs, and reusable frontend components following Git, testing, and performance optimization best practices.</li>
-            <li>Collaborated throughout the full software development lifecycle, leveraging AI-assisted tools to increase productivity.</li>
-          </ul>
-          <div class="project-tech" aria-label="Technologies used">
-            <span class="tech-tag">Laravel</span>
-            <span class="tech-tag">React</span>
-            <span class="tech-tag">TypeScript</span>
-            <span class="tech-tag">MySQL</span>
-            <span class="tech-tag">Inertia.js</span>
-            <span class="tech-tag">Tailwind CSS</span>
-          </div>
-        </article>
-
-        <article class="project-card reveal">
-          <div class="project-header">
-            <div class="project-title">
-              <i class="fas fa-clock project-icon" aria-hidden="true"></i>
-              <h3>PPA Desk Assistance & Attendance Monitoring System</h3>
-            </div>
-            <span class="project-badge">OJT / Immersion</span>
-          </div>
-          <p class="project-short">
-            Web-based system that automated Time In/Time Out recording, attendance tracking, and duty-hour computation
-            for OJT and immersion personnel at PPA.
-          </p>
-          <ul class="project-list">
-            <li>Built secure backend services and responsive interfaces with Laravel, React, TypeScript, MySQL, Inertia.js, and Tailwind CSS.</li>
-            <li>Translated operational requirements into technical solutions alongside PPA staff, incorporating stakeholder feedback throughout development.</li>
-            <li>Contributed to system architecture, debugging, testing, database design, and deployment with a multidisciplinary team.</li>
-          </ul>
-          <div class="project-tech" aria-label="Technologies used">
-            <span class="tech-tag">Laravel</span>
-            <span class="tech-tag">React</span>
-            <span class="tech-tag">TypeScript</span>
-            <span class="tech-tag">MySQL</span>
-          </div>
-        </article>
-
-        <article class="project-card reveal">
-          <div class="project-header">
-            <div class="project-title">
-              <i class="fas fa-chart-line project-icon" aria-hidden="true"></i>
-              <h3>DOST MSME Support Applications</h3>
-            </div>
-            <span class="project-badge">Government</span>
-          </div>
-          <p class="project-short">
-            Web-based applications supporting DOST programs that assist micro, small, and medium enterprises (MSMEs)
-            through business assessment and administrative workflows.
-          </p>
-          <ul class="project-list">
-            <li>Collaborated with project stakeholders to analyze requirements and design software solutions aligned with program objectives.</li>
-            <li>Automated business processes by digitizing records, application workflows, and data management.</li>
-            <li>Improved operational efficiency and reduced manual work across DOST-backed programs.</li>
-          </ul>
-          <div class="project-tech" aria-label="Technologies used">
-            <span class="tech-tag">PHP</span>
-            <span class="tech-tag">Laravel</span>
-            <span class="tech-tag">MySQL</span>
-            <span class="tech-tag">Web Apps</span>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Skills -->
-  <section id="skills" class="skills" aria-label="Skills">
-    <div class="container">
-      <h2 class="section-title">Skills</h2>
-      <div class="skill-filters" role="group" aria-label="Filter skills by category">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="frontend">Frontend</button>
-        <button class="filter-btn" data-filter="backend">Backend</button>
-        <button class="filter-btn" data-filter="design">Design</button>
-        <button class="filter-btn" data-filter="tools">Tools</button>
-      </div>
-      <div class="skills-container">
-        <div class="skills-grid">
-          <!-- Frontend -->
-          <div class="skill-card" data-skill="html5" data-category="frontend"><i class="fab fa-html5"></i><span>HTML5</span></div>
-          <div class="skill-card" data-skill="css3" data-category="frontend"><i class="fab fa-css3-alt"></i><span>CSS3</span></div>
-          <div class="skill-card" data-skill="javascript" data-category="frontend"><i class="fab fa-js-square"></i><span>JavaScript ES6+</span></div>
-          <div class="skill-card" data-skill="typescript" data-category="frontend"><i class="fas fa-code"></i><span>TypeScript</span></div>
-          <div class="skill-card" data-skill="react" data-category="frontend"><i class="fab fa-react"></i><span>React</span></div>
-          <div class="skill-card" data-skill="tailwind" data-category="frontend"><i class="fas fa-wind"></i><span>Tailwind CSS</span></div>
-          <div class="skill-card" data-skill="bootstrap" data-category="frontend"><i class="fab fa-bootstrap"></i><span>Bootstrap</span></div>
-          <div class="skill-card" data-skill="responsive" data-category="frontend"><i class="fas fa-mobile-alt"></i><span>Responsive Design</span></div>
-          <!-- Backend -->
-          <div class="skill-card" data-skill="php" data-category="backend"><i class="fab fa-php"></i><span>PHP</span></div>
-          <div class="skill-card" data-skill="laravel" data-category="backend"><i class="fab fa-laravel"></i><span>Laravel</span></div>
-          <div class="skill-card" data-skill="nodejs" data-category="backend"><i class="fab fa-node-js"></i><span>Node.js</span></div>
-          <div class="skill-card" data-skill="mysql" data-category="backend"><i class="fas fa-database"></i><span>MySQL</span></div>
-          <div class="skill-card" data-skill="csharp" data-category="backend"><i class="fas fa-hashtag"></i><span>C#</span></div>
-          <div class="skill-card" data-skill="api" data-category="backend"><i class="fas fa-plug"></i><span>RESTful APIs</span></div>
-          <!-- Design -->
-          <div class="skill-card" data-skill="uiux" data-category="design"><i class="fas fa-palette"></i><span>UI/UX Design</span></div>
-          <div class="skill-card" data-skill="figma" data-category="design"><i class="fab fa-figma"></i><span>Figma</span></div>
-          <div class="skill-card" data-skill="adobe" data-category="design"><i class="fab fa-adobe"></i><span>Photoshop</span></div>
-          <div class="skill-card" data-skill="premiere" data-category="design"><i class="fas fa-film"></i><span>Premiere Pro</span></div>
-          <!-- Tools -->
-          <div class="skill-card" data-skill="git" data-category="tools"><i class="fab fa-git-alt"></i><span>Git</span></div>
-          <div class="skill-card" data-skill="github" data-category="tools"><i class="fab fa-github"></i><span>GitHub</span></div>
-          <div class="skill-card" data-skill="docker" data-category="tools"><i class="fab fa-docker"></i><span>Docker</span></div>
-          <div class="skill-card" data-skill="vscode" data-category="tools"><i class="fas fa-code"></i><span>VS Code</span></div>
-          <div class="skill-card" data-skill="npm" data-category="tools"><i class="fab fa-npm"></i><span>NPM</span></div>
-          <div class="skill-card" data-skill="terminal" data-category="tools"><i class="fas fa-terminal"></i><span>Terminal</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section id="contact" class="contact" aria-label="Contact">
-    <div class="container">
-      <h2 class="section-title">Let's Connect</h2>
-      <p class="contact-subtitle">
-        I'm open to junior software engineering roles, internships, and freelance web development opportunities.
-        Let's build something great together.
-      </p>
-      <div class="contact-grid">
-        <a class="contact-card reveal" href="mailto:mathewvaliente20@gmail.com">
-          <i class="fas fa-envelope" aria-hidden="true"></i>
-          <span>mathewvaliente20@gmail.com</span>
-        </a>
-        <a class="contact-card reveal" href="tel:+639635874733">
-          <i class="fas fa-phone" aria-hidden="true"></i>
-          <span>+63 963 587 4733</span>
-        </a>
-        <a class="contact-card reveal" href="https://github.com/mat-devx" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-github" aria-hidden="true"></i>
-          <span>github.com/mat-devx</span>
-        </a>
-        <div class="contact-card reveal">
-          <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-          <span>Dipolog City, Philippines</span>
-        </div>
-      </div>
-
-      <div class="certifications reveal">
-        <h3>Certifications & Achievements</h3>
-        <ul class="cert-list">
-          <li><i class="fas fa-check-circle" aria-hidden="true"></i> Philippine National IT Standards (PHILNITS) Exam Candidate</li>
-          <li><i class="fas fa-check-circle" aria-hidden="true"></i> Certificate of Recognition — Best in Web Development</li>
-          <li><i class="fas fa-check-circle" aria-hidden="true"></i> Amplify S1 — Empowering MSME with AI and Digital Marketing</li>
-          <li><i class="fas fa-check-circle" aria-hidden="true"></i> EmbraceTheFuture — Azure AI: Your Gateway to Smart Solutions</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <p class="footer-copy">© 2026 Mathew Valiente. Crafted with HTML, CSS & JavaScript.</p>
-      <nav class="footer-links" aria-label="Footer">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#experience">Experience</a>
-        <a href="#projects">Projects</a>
-        <a href="#skills">Skills</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-  </footer>
-
-  <!-- simplified center dock: only Skills, Portfolio (GitHub) and Contact (email) -->
-  <!-- moved presentation to CSS: .dock-wrapper is fixed and centered -->
-  <div class="dock-wrapper" id="dock-wrapper" aria-hidden="false">
-    <nav class="dock" id="dock" aria-label="Site quick links">
-      <a href="#projects" class="dock-icon" data-tooltip="Projects" aria-label="View projects section">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
-        </svg>
-        <div class="tooltip" aria-hidden="true">Projects</div>
-      </a>
-
-      <a href="#skills" class="dock-icon" data-tooltip="Skills" aria-label="View skills section">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-        <div class="tooltip" aria-hidden="true">Skills</div>
-      </a>
-      <a href="https://github.com/mat-devx" class="dock-icon" data-tooltip="Portfolio (GitHub)" target="_blank"
-        rel="noopener noreferrer" aria-label="Open portfolio on GitHub">
-        <!-- Kept a compact GitHub mark for the portfolio link -->
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor"
-            d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.38 7.86 10.9.57.1.78-.25.78-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.27-1.68-1.27-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.25 3.33.96.1-.75.4-1.25.72-1.54-2.56-.29-5.26-1.28-5.26-5.69 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.02 0 0 .97-.31 3.18 1.17.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.48 3.17-1.17 3.17-1.17.62 1.57.23 2.73.11 3.02.74.8 1.18 1.82 1.18 3.07 0 4.42-2.71 5.39-5.29 5.67.41.36.77 1.08.77 2.18 0 1.58-.01 2.86-.01 3.25 0 .31.21.66.79.55C20.71 21.38 24 17.08 24 12c0-6.27-5.23-11.5-12-11.5z" />
-        </svg>
-        <div class="tooltip" aria-hidden="true">Portfolio</div>
-      </a>
-      <!-- NOTE: replace the email below with your real address if needed -->
-      <a href="mailto:mathewvaliente20@gmail.com" class="dock-icon" data-tooltip="Contact (Email)"
-        aria-label="Send an email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-          <polyline points="22,6 12,13 2,6" />
-        </svg>
-        <div class="tooltip" aria-hidden="true">Email</div>
-      </a>
-    </nav>
-  </div>
-
-  <script src="main.js" defer></script>
-</body>
-
+    <!-- Lenis Smooth Scroll -->
+    <script>
+      // Prevent browser from restoring scroll position on refresh
+      if (history.scrollRestoration) history.scrollRestoration = "manual";
+      window.scrollTo(0, 0);
+    </script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script src="main.js" defer></script>
+  </body>
 </html>
