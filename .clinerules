@@ -1,0 +1,14 @@
+# Superpowers Framework Core Directives
+You must follow strict engineering rhythms instead of "vibe coding."
+
+## 1. Brainstorming Phase
+- Before writing any code, ask 2-3 targeted clarifying questions about scope.
+- Propose a structural architecture in a markdown block.
+
+## 2. Test-Driven Development (TDD)
+- Do not write implementation code without test coverage.
+- Follow the Red-Green-Refactor loop: write the test, run it to watch it fail, then write implementation code to make it pass.
+
+## 3. Execution Planning
+- Break features down into atomic checklists.
+- Update your progress systematically. Never tackle more than one task item at a time.

@@ -119,7 +119,7 @@
           <a href="#home">Home</a>
           <a href="#about">About</a>
           <a href="#projects">Projects</a>
-          <a href="#experience">Experience</a>
+          <a href="#techstack">Experience</a>
           <a href="#skills">Skills</a>
           <a href="#contact">Contact</a>
         </div>
@@ -199,99 +199,50 @@
           <div class="about-text-layer">
             <div class="about-word-group">
               <span class="about-big-word word-white">DEFINE</span>
-              <div class="about-word-hover-content">
-                <p class="hover-label">What I do</p>
-                <p class="hover-heading">Hey, I'm<br><span class="hover-name">Mathew Valiente</span></p>
-                <p class="hover-text">Versatile Software Engineer passionate about building innovative software solutions, continuously learning new technologies, and adapting to the ever-evolving field of software engineering.</p>
-              </div>
             </div>
             <div class="about-word-group">
               <span class="about-big-word word-muted">DESIGN</span>
-              <div class="about-word-hover-content">
-                <p class="hover-label">How I work</p>
-                <p class="hover-text">Mockup — Design system and interface exploration coming soon.</p>
-              </div>
             </div>
             <div class="about-word-group">
               <span class="about-big-word word-dim">DELIVER</span>
-              <div class="about-word-hover-content">
-                <p class="hover-label">What I ship</p>
-                <p class="hover-text">Mockup — Project delivery and results showcase coming soon.</p>
-              </div>
             </div>
           </div>
-          <div class="about-details">
-            <p class="about-bio">
-              Versatile software engineer building modern, scalable web
-              applications, continuously learning new technologies and adapting
-              to modern software development practices. Experienced in
-              full-stack development through hands-on work with government
-              agencies and a capstone project that digitizes barangay document
-              workflows.
-            </p>
-          </div>
+          
         </div>
         <div class="about-portrait">
-          <div class="about-portrait-card">
-            <div class="about-mockup-avatar" aria-hidden="true">
-              <svg
-                viewBox="0 0 200 200"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <defs>
-                  <linearGradient
-                    id="avatarBg"
-                    x1="0"
-                    y1="0"
-                    x2="200"
-                    y2="200"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stop-color="#1e1b4b" />
-                    <stop offset="1" stop-color="#312e81" />
-                  </linearGradient>
-                  <linearGradient
-                    id="avatarGlow"
-                    x1="50"
-                    y1="50"
-                    x2="150"
-                    y2="150"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stop-color="#818cf8" stop-opacity="0.3" />
-                    <stop offset="1" stop-color="#a78bfa" stop-opacity="0.1" />
-                  </linearGradient>
-                </defs>
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="96"
-                  fill="url(#avatarBg)"
-                  stroke="url(#avatarGlow)"
-                  stroke-width="2"
-                />
-                <circle cx="100" cy="78" r="32" fill="#334155" />
-                <ellipse cx="100" cy="150" rx="48" ry="36" fill="#334155" />
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="96"
-                  fill="url(#avatarGlow)"
-                  opacity="0.5"
-                />
-              </svg>
+          <div class="about-intro-card">
+            <div class="intro-card-avatar">
+              <img
+                src="Profile.jpg"
+                alt="Portrait of Mathew Valiente"
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="intro-card-ring" aria-hidden="true"></div>
             </div>
-            <div class="about-mockup-card-ui">
-              <div class="mockup-bar">
-                <span class="mockup-dot mockup-dot--red"></span>
-                <span class="mockup-dot mockup-dot--yellow"></span>
-                <span class="mockup-dot mockup-dot--green"></span>
+            <div class="intro-card-text">
+              <p class="intro-card-greeting">Hey, I'm</p>
+              <h3 class="intro-card-name">Mathew<br />Valiente</h3>
+              <p class="intro-card-subtitle">
+                Versatile Software Engineer passionate about building innovative
+                software solutions, continuously learning new technologies, and
+                adapting to the ever-evolving field of software engineering.
+              </p>
+              <div class="intro-card-code-line" aria-hidden="true">
+                <span class="code-prefix"><</span>
+                <span id="about-typing" class="typing"></span>
+                <span class="code-suffix">/></span>
               </div>
-              <div class="mockup-content">
-                <div class="mockup-line mockup-line--name"></div>
-                <div class="mockup-line mockup-line--role"></div>
-                <div class="mockup-line mockup-line--short"></div>
+              <div class="intro-card-cta-row">
+                <a class="btn-primary" href="#projects">View Projects</a>
+                <a
+                  href="assets/Resume_Valiente.pdf"
+                  download="Mathew_Valiente_Resume.pdf"
+                  class="btn-ghost"
+                >
+                  <i class="fas fa-download"></i>
+                  Resume
+                </a>
               </div>
             </div>
           </div>
@@ -300,57 +251,95 @@
     </section>
 
     <!-- Tech Stack + Process Timeline (pinned parallax) -->
-    <section id="techstack" class="techstack" aria-label="Tech Stack" data-header-theme="dark" style="order: 2">
+    <section
+      id="techstack"
+      class="techstack"
+      aria-label="Tech Stack"
+      data-header-theme="dark"
+      style="order: 2"
+    >
       <div class="techstack-split">
         <!-- LEFT: scrolling process timeline -->
         <div class="techstack-left">
-          <div class="process-timeline" aria-label="Process steps">
-            <div class="process-step" data-step="0">
-              <span class="process-step-number" aria-hidden="true">01</span>
-              <div class="process-step-body">
-                <h3 class="process-step-title">Discovery</h3>
-                <p class="process-step-text">
-                  Workshops, stakeholder interviews, and requirement mapping to
-                  define the problem and set clear goals before anything is built.
-                </p>
+          <div class="process-timeline" aria-label="Experience timeline">
+            <div class="timeline-intro reveal">
+              <span class="section-eyebrow">EXPERIENCE</span>
+            </div>
+            <!-- Entry 1: Philippine Ports Authority -->
+            <div class="timeline-entry" data-step="0">
+              <div class="timeline-node-col">
+                <div class="timeline-company-badge">PPA</div>
+              </div>
+              <div class="timeline-entry-body">
+                <div class="timeline-company-info">
+                  <h3 class="timeline-company-name">
+                    Philippine Ports Authority
+                  </h3>
+                  <span class="timeline-meta">OJT &middot; Dapitan City</span>
+                </div>
+                <div class="timeline-role">
+                  <h4 class="timeline-role-title">
+                    Full-Stack Web App Developer
+                  </h4>
+                  <span class="timeline-date-range">2025 – 2026</span>
+                  <p class="timeline-role-desc">
+                    Developed a web-based PPA Desk Assistance and Attendance
+                    Monitoring System that automated Time In/Time Out recording,
+                    attendance tracking, and duty-hour computation for OJT and
+                    immersion personnel.
+                  </p>
+                  <p class="timeline-role-desc">
+                    Built secure backend services and responsive user interfaces
+                    using Laravel, React, TypeScript, MySQL, Inertia.js, and
+                    Tailwind CSS.
+                  </p>
+                  <div class="timeline-skills">
+                    <span class="timeline-skill-tag">Laravel</span>
+                    <span class="timeline-skill-tag">React</span>
+                    <span class="timeline-skill-tag">TypeScript</span>
+                    <span class="timeline-skill-tag">+3 skills</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="process-step" data-step="1">
-              <span class="process-step-number" aria-hidden="true">02</span>
-              <div class="process-step-body">
-                <h3 class="process-step-title">Concept & Design</h3>
-                <p class="process-step-text">
-                  Wireframes, UI/UX exploration, and system architecture that
-                  shape the product long before a line of code is written.
-                </p>
+            <!-- Entry 2: DOST -->
+            <div class="timeline-entry" data-step="1">
+              <div class="timeline-node-col">
+                <div class="timeline-company-badge">DOST</div>
+              </div>
+              <div class="timeline-entry-body">
+                <div class="timeline-company-info">
+                  <h3 class="timeline-company-name">
+                    Dept. of Science and Technology
+                  </h3>
+                  <span class="timeline-meta"
+                    >Full-time &middot; 1 yr &middot; Dipolog City</span
+                  >
+                </div>
+                <div class="timeline-role">
+                  <h4 class="timeline-role-title">Software Developer</h4>
+                  <span class="timeline-date-range">2024 – 2025</span>
+                  <p class="timeline-role-desc">
+                    Developed web-based applications supporting DOST programs
+                    that assist micro, small, and medium enterprises (MSMEs)
+                    through business assessment and administrative workflows.
+                  </p>
+                  <p class="timeline-role-desc">
+                    Automated business processes by digitizing records,
+                    application workflows, and data management, improving
+                    operational efficiency and reducing manual work.
+                  </p>
+                  <div class="timeline-skills">
+                    <span class="timeline-skill-tag">Full-Stack Dev</span>
+                    <span class="timeline-skill-tag">Process Automation</span>
+                    <span class="timeline-skill-tag">+2 skills</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="process-step" data-step="2">
-              <span class="process-step-number" aria-hidden="true">03</span>
-              <div class="process-step-body">
-                <h3 class="process-step-title">Development</h3>
-                <p class="process-step-text">
-                  Iterative builds with clean, testable code, continuous
-                  feedback, and regular demos so the work never drifts from the
-                  vision.
-                </p>
-              </div>
-            </div>
-
-            <div class="process-step" data-step="3">
-              <span class="process-step-number" aria-hidden="true">04</span>
-              <div class="process-step-body">
-                <h3 class="process-step-title">Launch & Support</h3>
-                <p class="process-step-text">
-                  Deployment, monitoring, and ongoing improvements keep the
-                  product fast, secure, and reliable long after it ships.
-                </p>
-              </div>
-            </div>
-
-            <!-- Vertical timeline line -->
+            <!-- Animated vertical timeline line -->
             <div class="process-timeline-line" aria-hidden="true">
               <div class="process-timeline-line-fill"></div>
             </div>
@@ -360,45 +349,115 @@
         <!-- RIGHT: pinned tech stack content -->
         <div class="techstack-right" aria-label="Tech Stack details">
           <span class="section-eyebrow reveal">BUILT WITH</span>
-          <h2 class="techstack-heading reveal">A Modern,<br>Production-Grade<br>Stack</h2>
-          <p class="techstack-sub reveal">The same frameworks and infrastructure trusted by the best teams in tech, so your product launches fast, scales effortlessly, and never feels outdated.</p>
+          <h2 class="techstack-heading reveal">
+            A Modern,<br />Production-Grade<br />Stack
+          </h2>
+          <p class="techstack-sub reveal">
+            The same frameworks and infrastructure trusted by the best teams in
+            tech, so your product launches fast, scales effortlessly, and never
+            feels outdated.
+          </p>
 
           <!-- Brand ticker — auto-scrolling horizontal ribbon -->
           <div class="tech-brand-ribbon reveal" aria-label="Technologies used">
             <div class="tech-brand-track">
-              <div class="tech-brand-item" data-brand="html5"><i class="fab fa-html5"></i><span>HTML5</span></div>
-              <div class="tech-brand-item" data-brand="css3"><i class="fab fa-css3-alt"></i><span>CSS3</span></div>
-              <div class="tech-brand-item" data-brand="javascript"><i class="fab fa-js-square"></i><span>JavaScript</span></div>
-              <div class="tech-brand-item" data-brand="react"><i class="fab fa-react"></i><span>React</span></div>
-              <div class="tech-brand-item" data-brand="bootstrap"><i class="fab fa-bootstrap"></i><span>Bootstrap</span></div>
-              <div class="tech-brand-item" data-brand="tailwind"><i class="fas fa-wind"></i><span>Tailwind</span></div>
-              <div class="tech-brand-item" data-brand="nodejs"><i class="fab fa-node-js"></i><span>Node.js</span></div>
-              <div class="tech-brand-item" data-brand="php"><i class="fab fa-php"></i><span>PHP</span></div>
-              <div class="tech-brand-item" data-brand="laravel"><i class="fab fa-laravel"></i><span>Laravel</span></div>
-              <div class="tech-brand-item" data-brand="mysql"><i class="fas fa-database"></i><span>MySQL</span></div>
-              <div class="tech-brand-item" data-brand="git"><i class="fab fa-git-alt"></i><span>Git</span></div>
-              <div class="tech-brand-item" data-brand="github"><i class="fab fa-github"></i><span>GitHub</span></div>
-              <div class="tech-brand-item" data-brand="vscode"><i class="fas fa-code"></i><span>VS Code</span></div>
-              <div class="tech-brand-item" data-brand="npm"><i class="fab fa-npm"></i><span>NPM</span></div>
-              <div class="tech-brand-item" data-brand="docker"><i class="fab fa-docker"></i><span>Docker</span></div>
-              <div class="tech-brand-item" data-brand="terminal"><i class="fas fa-terminal"></i><span>Terminal</span></div>
+              <div class="tech-brand-item" data-brand="html5">
+                <i class="fab fa-html5"></i><span>HTML5</span>
+              </div>
+              <div class="tech-brand-item" data-brand="css3">
+                <i class="fab fa-css3-alt"></i><span>CSS3</span>
+              </div>
+              <div class="tech-brand-item" data-brand="javascript">
+                <i class="fab fa-js-square"></i><span>JavaScript</span>
+              </div>
+              <div class="tech-brand-item" data-brand="react">
+                <i class="fab fa-react"></i><span>React</span>
+              </div>
+              <div class="tech-brand-item" data-brand="bootstrap">
+                <i class="fab fa-bootstrap"></i><span>Bootstrap</span>
+              </div>
+              <div class="tech-brand-item" data-brand="tailwind">
+                <i class="fas fa-wind"></i><span>Tailwind</span>
+              </div>
+              <div class="tech-brand-item" data-brand="nodejs">
+                <i class="fab fa-node-js"></i><span>Node.js</span>
+              </div>
+              <div class="tech-brand-item" data-brand="php">
+                <i class="fab fa-php"></i><span>PHP</span>
+              </div>
+              <div class="tech-brand-item" data-brand="laravel">
+                <i class="fab fa-laravel"></i><span>Laravel</span>
+              </div>
+              <div class="tech-brand-item" data-brand="mysql">
+                <i class="fas fa-database"></i><span>MySQL</span>
+              </div>
+              <div class="tech-brand-item" data-brand="git">
+                <i class="fab fa-git-alt"></i><span>Git</span>
+              </div>
+              <div class="tech-brand-item" data-brand="github">
+                <i class="fab fa-github"></i><span>GitHub</span>
+              </div>
+              <div class="tech-brand-item" data-brand="vscode">
+                <i class="fas fa-code"></i><span>VS Code</span>
+              </div>
+              <div class="tech-brand-item" data-brand="npm">
+                <i class="fab fa-npm"></i><span>NPM</span>
+              </div>
+              <div class="tech-brand-item" data-brand="docker">
+                <i class="fab fa-docker"></i><span>Docker</span>
+              </div>
+              <div class="tech-brand-item" data-brand="terminal">
+                <i class="fas fa-terminal"></i><span>Terminal</span>
+              </div>
               <!-- Duplicate items for seamless loop -->
-              <div class="tech-brand-item" data-brand="html5"><i class="fab fa-html5"></i><span>HTML5</span></div>
-              <div class="tech-brand-item" data-brand="css3"><i class="fab fa-css3-alt"></i><span>CSS3</span></div>
-              <div class="tech-brand-item" data-brand="javascript"><i class="fab fa-js-square"></i><span>JavaScript</span></div>
-              <div class="tech-brand-item" data-brand="react"><i class="fab fa-react"></i><span>React</span></div>
-              <div class="tech-brand-item" data-brand="bootstrap"><i class="fab fa-bootstrap"></i><span>Bootstrap</span></div>
-              <div class="tech-brand-item" data-brand="tailwind"><i class="fas fa-wind"></i><span>Tailwind</span></div>
-              <div class="tech-brand-item" data-brand="nodejs"><i class="fab fa-node-js"></i><span>Node.js</span></div>
-              <div class="tech-brand-item" data-brand="php"><i class="fab fa-php"></i><span>PHP</span></div>
-              <div class="tech-brand-item" data-brand="laravel"><i class="fab fa-laravel"></i><span>Laravel</span></div>
-              <div class="tech-brand-item" data-brand="mysql"><i class="fas fa-database"></i><span>MySQL</span></div>
-              <div class="tech-brand-item" data-brand="git"><i class="fab fa-git-alt"></i><span>Git</span></div>
-              <div class="tech-brand-item" data-brand="github"><i class="fab fa-github"></i><span>GitHub</span></div>
-              <div class="tech-brand-item" data-brand="vscode"><i class="fas fa-code"></i><span>VS Code</span></div>
-              <div class="tech-brand-item" data-brand="npm"><i class="fab fa-npm"></i><span>NPM</span></div>
-              <div class="tech-brand-item" data-brand="docker"><i class="fab fa-docker"></i><span>Docker</span></div>
-              <div class="tech-brand-item" data-brand="terminal"><i class="fas fa-terminal"></i><span>Terminal</span></div>
+              <div class="tech-brand-item" data-brand="html5">
+                <i class="fab fa-html5"></i><span>HTML5</span>
+              </div>
+              <div class="tech-brand-item" data-brand="css3">
+                <i class="fab fa-css3-alt"></i><span>CSS3</span>
+              </div>
+              <div class="tech-brand-item" data-brand="javascript">
+                <i class="fab fa-js-square"></i><span>JavaScript</span>
+              </div>
+              <div class="tech-brand-item" data-brand="react">
+                <i class="fab fa-react"></i><span>React</span>
+              </div>
+              <div class="tech-brand-item" data-brand="bootstrap">
+                <i class="fab fa-bootstrap"></i><span>Bootstrap</span>
+              </div>
+              <div class="tech-brand-item" data-brand="tailwind">
+                <i class="fas fa-wind"></i><span>Tailwind</span>
+              </div>
+              <div class="tech-brand-item" data-brand="nodejs">
+                <i class="fab fa-node-js"></i><span>Node.js</span>
+              </div>
+              <div class="tech-brand-item" data-brand="php">
+                <i class="fab fa-php"></i><span>PHP</span>
+              </div>
+              <div class="tech-brand-item" data-brand="laravel">
+                <i class="fab fa-laravel"></i><span>Laravel</span>
+              </div>
+              <div class="tech-brand-item" data-brand="mysql">
+                <i class="fas fa-database"></i><span>MySQL</span>
+              </div>
+              <div class="tech-brand-item" data-brand="git">
+                <i class="fab fa-git-alt"></i><span>Git</span>
+              </div>
+              <div class="tech-brand-item" data-brand="github">
+                <i class="fab fa-github"></i><span>GitHub</span>
+              </div>
+              <div class="tech-brand-item" data-brand="vscode">
+                <i class="fas fa-code"></i><span>VS Code</span>
+              </div>
+              <div class="tech-brand-item" data-brand="npm">
+                <i class="fab fa-npm"></i><span>NPM</span>
+              </div>
+              <div class="tech-brand-item" data-brand="docker">
+                <i class="fab fa-docker"></i><span>Docker</span>
+              </div>
+              <div class="tech-brand-item" data-brand="terminal">
+                <i class="fas fa-terminal"></i><span>Terminal</span>
+              </div>
             </div>
           </div>
         </div>
@@ -407,27 +466,50 @@
     </section>
 
     <!-- Projects — Selected Work (pinned Liquid Glass canvas) -->
-    <section id="projects" class="projects" aria-label="Projects" data-header-theme="light" style="order: 3">
+    <section
+      id="projects"
+      class="projects"
+      aria-label="Projects"
+      data-header-theme="light"
+      style="order: 3"
+    >
       <div class="projects-pin-spacer">
         <div class="projects-sticky">
-          <div class="lg-blob lg-blob--1" aria-hidden="true"></div>
-          <div class="lg-blob lg-blob--2" aria-hidden="true"></div>
-          <div class="lg-blob lg-blob--4" aria-hidden="true"></div>
+          <div id="cursor-glow" aria-hidden="true"></div>
           <div class="container projects-container">
-        <span class="section-eyebrow reveal">PORTFOLIO</span>
-        <h2 class="projects-heading reveal">Built for every project</h2>
-        <p class="projects-sub reveal">Real projects for real clients, from government systems to full-stack platforms and everything in between.</p>
+            <span class="section-eyebrow reveal">PORTFOLIO</span>
+            <h2 class="projects-heading reveal">Built for every project</h2>
+            <p class="projects-sub reveal">
+              Real projects for real clients, from government systems to
+              full-stack platforms and everything in between.
+            </p>
 
-        <div class="projects-controls reveal">
-          <div class="project-filters" role="group" aria-label="Filter projects">
-            <button class="project-filter-btn active" data-pfilter="all">All</button>
-            <button class="project-filter-btn" data-pfilter="real">Real Project</button>
-            <button class="project-filter-btn" data-pfilter="exploration">Exploration</button>
-          </div>
-          <a href="https://github.com/mat-devx" target="_blank" rel="noopener noreferrer" class="view-all-link">
-            View full portfolio <i class="fas fa-arrow-up-right" aria-hidden="true"></i>
-          </a>
-        </div>
+            <div class="projects-controls reveal">
+              <div
+                class="project-filters"
+                role="group"
+                aria-label="Filter projects"
+              >
+                <button class="project-filter-btn active" data-pfilter="all">
+                  All
+                </button>
+                <button class="project-filter-btn" data-pfilter="real">
+                  Real Project
+                </button>
+                <button class="project-filter-btn" data-pfilter="exploration">
+                  Exploration
+                </button>
+              </div>
+              <a
+                href="https://github.com/mat-devx"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="view-all-link"
+              >
+                View full portfolio
+                <i class="fas fa-arrow-up-right" aria-hidden="true"></i>
+              </a>
+            </div>
 
             <!-- Fan Carousel -->
             <div class="fan-carousel">
@@ -444,82 +526,11 @@
     <section id="experience" class="experience" aria-label="Experience" data-header-theme="light" style="order: 4">
       <div class="experience-bg" aria-hidden="true"></div>
 
-      <!-- Vibrant organic liquid-glass gradient blobs -->
-      <div class="lg-blob lg-blob--5" aria-hidden="true"></div>
-      <div class="lg-blob lg-blob--6" aria-hidden="true"></div>
-
       <div class="container experience-container">
-        <h2 class="section-title">Experience</h2>
+        <h2 class="section-title">Constructing</h2>
         <div class="timeline">
           <article class="timeline-item reveal">
             <div class="timeline-marker" aria-hidden="true"></div>
-            <div class="timeline-card">
-              <div class="timeline-header">
-                <div>
-                  <h3>Full-Stack Web App Developer</h3>
-                  <p class="timeline-org">
-                    Philippine Ports Authority (PPA) · Dapitan City
-                  </p>
-                </div>
-                <span class="timeline-date">2025 – 2026</span>
-              </div>
-              <ul class="timeline-list">
-                <li>
-                  Developed a web-based PPA Desk Assistance and Attendance
-                  Monitoring System that automated Time In/Time Out recording,
-                  attendance tracking, and duty-hour computation for OJT and
-                  immersion personnel.
-                </li>
-                <li>
-                  Built secure backend services and responsive user interfaces
-                  using Laravel, React, TypeScript, MySQL, Inertia.js, and
-                  Tailwind CSS.
-                </li>
-                <li>
-                  Partnered with PPA staff to translate operational requirements
-                  into technical solutions, incorporating stakeholder feedback
-                  throughout development.
-                </li>
-                <li>
-                  Contributed to system architecture, debugging, testing,
-                  database design, and deployment while collaborating with a
-                  multidisciplinary student development team.
-                </li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="timeline-item reveal">
-            <div class="timeline-marker" aria-hidden="true"></div>
-            <div class="timeline-card">
-              <div class="timeline-header">
-                <div>
-                  <h3>Software Developer</h3>
-                  <p class="timeline-org">
-                    Department of Science and Technology (DOST) · Dipolog City
-                  </p>
-                </div>
-                <span class="timeline-date">2024 – 2025</span>
-              </div>
-              <ul class="timeline-list">
-                <li>
-                  Developed web-based applications supporting DOST programs that
-                  assist micro, small, and medium enterprises (MSMEs) through
-                  business assessment and administrative workflows.
-                </li>
-                <li>
-                  Collaborated with project stakeholders to analyze requirements
-                  and design software solutions aligned with program objectives.
-                </li>
-                <li>
-                  Automated business processes by digitizing records,
-                  application workflows, and data management, improving
-                  operational efficiency and reducing manual work.
-                </li>
-              </ul>
-            </div>
-          </article>
-        </div>
       </div>
     </section>
 
@@ -590,39 +601,40 @@
               <i class="fas fa-arrow-right" aria-hidden="true"></i>
             </button>
           </form>
-        </div>
-      </div>
-    </section>
+      </div><!-- /.projects-sticky -->
+    </section><!-- /#projects -->
 
-    <!-- Footer — compact glassmorphism bar -->
-    <footer class="site-footer" aria-label="Footer">
-      <div class="footer-inner">
-        <div class="footer-left">
-          <span class="footer-copy">&copy; 2026 Mathew Valiente</span>
-        </div>
-        <div class="footer-socials">
-          <a
-            href="https://github.com/mat-devx"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-          >
-            <i class="fab fa-github"></i>
-          </a>
-          <a href="mailto:mathewvaliente20@gmail.com" aria-label="Email">
-            <i class="fas fa-envelope"></i>
-          </a>
-          <a href="tel:+639635874733" aria-label="Phone">
-            <i class="fas fa-phone"></i>
-          </a>
-          <a
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-          >
-            <i class="fab fa-linkedin-in"></i>
-          </a>
+    <!-- Footer — revealed by scroll parallax after projects pin ends -->
+    <footer class="site-footer site-footer--light" id="site-footer" aria-label="Footer">
+      <div class="footer-reveal" id="footer-reveal">
+        <div class="footer-inner footer-inner--spaced">
+          <div class="footer-left">
+            <span class="footer-copy">&copy; 2026 Mathew Valiente</span>
+          </div>
+          <div class="footer-socials">
+            <a
+              href="https://github.com/mat-devx"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+            >
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:mathewvaliente20@gmail.com" aria-label="Email">
+              <i class="fas fa-envelope"></i>
+            </a>
+            <a href="tel:+639635874733" aria-label="Phone">
+              <i class="fas fa-phone"></i>
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
         </div>
       </div>
     </footer>
@@ -703,11 +715,6 @@
     </div>
 
     <!-- Lenis Smooth Scroll -->
-    <script>
-      // Prevent browser from restoring scroll position on refresh
-      if (history.scrollRestoration) history.scrollRestoration = "manual";
-      window.scrollTo(0, 0);
-    </script>
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
     <script src="main.js" defer></script>
   </body>

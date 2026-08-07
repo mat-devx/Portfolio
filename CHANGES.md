@@ -1,9 +1,17 @@
 # Portfolio Changes
 
+## Launch Hardening (2026-08-07)
+
+- **Dead CSS removed**: ~430 lines cut from `style.css` — the entire old PROCESS block (`process-*`, `techstack-process`, `process-inline-grid*`), dead `.timeline-card`/`.timeline-header`/`.timeline-org`/`.timeline-date`/`.timeline-list` rules, `.define-hover`, `.hover-*`, and orphaned `.about-portrait-card` rules. Live techstack/experience timeline CSS untouched. Verified: brace-balanced, zero CSS diagnostics, all removed selectors confirmed dead (html:0, js:0).
+- **Inline script moved**: the scroll-restoration snippet moved from `index.html` into the top of `main.js` (inside the IIFE). `index.html` now has zero inline `<script>` blocks, so CSP can drop `script-src 'unsafe-inline'`.
+- **Cloudflare Pages `_headers`**: full CSP (`default-src 'self'`, scripts only from self + unpkg, styles from self + Google Fonts + cdnjs + `'unsafe-inline'` for the `style="order: N"` attributes, fonts from gstatic + cdnjs, data: for the inline SVG favicon/mockups) plus `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: DENY`, `COOP`, and HSTS.
+- **`robots.txt`**: allow-all for indexing.
+
 ## Current Architecture
 
-- **Section Reordering**: Body is a CSS grid with inline `order` styles. DOM order is Hero → About → Tech Stack → Projects → Experience → Contact → Footer, reflowed to: Hero (0) → About (1) → Tech Stack (2) → Projects (3) → Experience (4) → Contact (6) → Footer (7).
+- **Section Reordering**: Body is a CSS grid with inline `order` styles. DOM order is Hero → About → Tech Stack → Projects → Constructing → Contact → Footer, reflowed to: Hero (0) → About (1) → Tech Stack (2) → Projects (3) → Constructing (4) → Contact (6) → Footer (7).
 - **Sticky magic**: `.about-sticky` pins the About content while `.projects-pin-spacer`/`.projects-sticky` pins the Selected Work canvas to the viewport during its scroll room.
+- **Experience content** lives in Tech Stack's left-column `process-timeline` (PPA + DOST entries). The standalone section (order 4) was renamed to "Constructing" — it shows work in progress and keeps all `--exp-progress` driven effects (off-white melting background, dark→light theme blending, card zoom parallax).
 
 ## Header Theme Detector
 
@@ -16,16 +24,15 @@
 - **Glass Panels**: Project fan cards and experience timeline cards use `backdrop-filter: blur(25px) saturate(140%)` with translucent `rgba(255,255,255,…)` backgrounds.
 - **Glass Borders**: Ultra-thin `1px solid rgba(255,255,255,0.15)` borders with rounded squircle-style corners (28px radii).
 - **Bevel Highlights**: Bright top-edge inner borders `inset 0 1px 0 rgba(255,255,255,0.35)` simulate light catching the glass edge, paired with dynamic soft outer shadows.
-- **Organic Blobs**: Six slowly-drifting radial-gradient blobs (gold/emerald/blue) sit behind the Projects and Experience panels (`lg-blob--1/2/4` in Projects, `lg-blob--5/6` in Experience). Each floats via `lg-blob-float` keyframes.
+- **Organic Blobs**: Removed 2026-08-07. The drifting radial-gradient blobs (gold/emerald/blue) bled through the light Projects canvas background; the frosted panels now sit on a clean light gradient.
 - **Page Canvas**: Body uses soft radial gradients + animated `::before`/`::after` layers behind the glass.
 
 ## Pinned Scroll Transition (Static → Parallax Zoom)
 
-1. **Projects pin-spacer**: `220vh` (mobile `340vh`) scroll room.
-2. **Projects-sticky**: `position: sticky; top: 0; height: 100vh` keeps the Selected Work canvas pinned while scrolling.
-3. **Experience overlay**: `margin-top: -100vh; z-index: 5` pulls the Experience section over the pinned projects.
-4. **Zoom/Scale Parallax**: Each `.timeline-item` scales from `0.82 → 1.0` and translates up `70px → 0` as `--exp-progress` goes `0 → 1` (independent `scale`/`translate` properties).
-5. **Frosted reveal**: `.experience` uses `backdrop-filter: blur(6px) saturate(140%)`; `.experience-bg` (off-white, `--exp-progress` opacity, rounded bottom via clip-path) melts in to reveal the cards.
+1. **Projects pin-spacer**: `160vh` (mobile `260vh`) scroll room.
+2. **Projects-sticky**: `position: sticky; top: 0; height: 100vh` keeps the Selected Work canvas pinned while scrolling. The canvas is **static** — no zoom, no drift (scroll-driven motion removed 2026-08-07 per user request). The pin reads as a stable docked frame, and Contact scrolls over it in normal flow.
+3. **Contact rises over the canvas**: `.contact` is `position: relative; z-index: 1` with an opaque `var(--bg)` background, so it paints **above** the pinned Projects section (which is `position: relative` with `z-index: auto`). As the pin's last viewport scrolls, the dark Contact section slides up over the light canvas and lands covering the viewport exactly when the pin releases. Footer (z-index 10) still paints above Contact. Pure smooth scrolling — no parallax/stagger.
+4. **Footer**: renders in normal flow after Contact (no overlap/reveal).
 
 ## Scroll-Driven Effects
 
@@ -41,15 +48,20 @@
 - **Features**: Filter tabs (All, Real Project, Exploration), "View full portfolio" link, and a fan carousel rendered by `main.js` (`initProjectsSection`).
 - **Layout**: `fan-track` horizontal spread with rotated side cards; drag/swipe via `initFanCarousel`.
 - **Mobile**: Horizontal snap-scrolling inside the pinned canvas (`76vw` cards, `340vh` spacer).
+- **Particles removed**: The floating green/gold ambient particle canvas (`#projects-particles`, `initParticles()` IIFE) was removed per user preference (2026-08-07). Cursor glow (`#cursor-glow`) retained.
+
+## Footer (simplified — 2026-08-07)
+
+The earlier rise-over-canvas reveal (tall scroll-room box, sticky dock, `--footer-progress`) read as accidental and was removed. The footer now renders in normal CSS grid flow after Contact, with `margin-bottom: var(--dock-height)` for dock clearance. No JS-driven motion, no negative margins, no mobile/reduced-motion overrides needed.
 
 ## Accessibility
 
 - Sections carry `data-header-theme` for automatic header color switching.
-- `prefers-reduced-motion` disables animations (global `* { animation-duration… }` override, `.reveal`, `.text-motion`, hero intro, hero→about transition, and landing snap).
+- `prefers-reduced-motion` disables animations (global `* { animation-duration… }` override, `.reveal`, `.text-motion`, hero intro, and hero→about transition). Section snap (`initSectionSnap`) was removed 2026-08-07 — no landing magnet, pure free scroll.
 
 ## Performance
 
 - Scroll-driven values are set with `requestAnimationFrame` throttling where needed.
 - CSS uses compositor-friendly transforms and independent `scale`/`translate` properties.
 - `background-attachment: fixed` is intentionally removed from `body` to avoid repaint jank on macOS Safari/Chrome.
-- No heavy per-frame parallax on the main content; the hero parallax layers and blobs are transform/opacity only.
+- No heavy per-frame parallax on the main content; the hero parallax layers are transform/opacity only. The organic blobs were removed 2026-08-07 (they bled through the light Projects background).

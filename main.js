@@ -1,10 +1,9 @@
-/**
- * Portfolio - Main JavaScript (Optimized)
- * Clean, performant — no heavy parallax or pinned scroll.
- */
-
 (function () {
   "use strict";
+
+  // Prevent browser from restoring scroll position on refresh
+  if (history.scrollRestoration) history.scrollRestoration = "manual";
+  window.scrollTo(0, 0);
 
   // DOM elements
   const typingEl = document.getElementById("typing");
@@ -26,10 +25,167 @@
   const DELETING_SPEED = 80;
   const PAUSE_MS = 1800;
 
+  // Pointer tilt + scroll parallax + blur reveal for about-intro-card.
+  // A single rAF loop with exponential smoothing (lerp) drives the
+  // transform every frame — buttery in every browser, no CSS custom
+  // property transitions, no class-state conflicts.
+  function initAboutCardMotion() {
+    const card = document.querySelector(".about-intro-card");
+    if (!card) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    // State — targets are updated by events/scroll, current values
+    // are lerped toward them every frame for smoothness.
+    let inView = false;
+    let hovering = false;
+    let revealed = false;
+    let loopRunning = false;
+    let targetTiltX = 0;
+    let targetTiltY = 0;
+    let smoothTiltX = 0;
+    let smoothTiltY = 0;
+    let smoothScrollY = 0;
+    let smoothScrollRot = 0;
+
+    // ── Blur reveal on first scroll into view ──
+    const enterObserver = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+
+        if (entry.isIntersecting) {
+          if (!revealed) {
+            revealed = true;
+            card.classList.add("is-entering");
+            setTimeout(() => card.classList.remove("is-entering"), 1200);
+          }
+          startLoop();
+        } else {
+          // Hover state can leak while the cursor is over a card that
+          // scrolls out from under it — clean up when leaving view.
+          hovering = false;
+          stopLoop();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    enterObserver.observe(card);
+
+    // ── Pointer tilt targets (only meaningful while in view) ──
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const nx = (e.clientX - rect.left) / (rect.width || 1) - 0.5;
+      const ny = (e.clientY - rect.top) / (rect.height || 1) - 0.5;
+      targetTiltX = ny * 14;
+      targetTiltY = nx * -14;
+      hovering = true;
+    });
+
+    card.addEventListener("mouseleave", () => {
+      targetTiltX = 0;
+      targetTiltY = 0;
+      hovering = false;
+    });
+
+    // ── Main loop — runs only while the card is near the viewport.
+    //    Stops when the card leaves so we never read layout off-screen. ──
+    let rafId = null;
+
+    function startLoop() {
+      if (reduceMotion || loopRunning) return;
+      loopRunning = true;
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function stopLoop() {
+      loopRunning = false;
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    }
+
+    function tick() {
+      if (!loopRunning) return;
+      const now = performance.now() / 1000;
+
+      // Scroll parallax: card drifts vertically + rotates slightly
+      // based on its distance from the viewport center. Negative when
+      // the card is above center, positive when below — a real
+      // scroll-linked move, not a static CSS tilt.
+      const rect = card.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const centerOffset = (rect.top + rect.height / 2 - vh / 2) / (vh / 2);
+      const targetScrollY = centerOffset * 40;
+      const targetScrollRot = centerOffset * 3;
+
+      // Hover: lift, scale, and straighten toward level
+      const targetLift = hovering ? -14 : 0;
+      const targetScale = hovering ? 1.035 : 1;
+      const targetBaseRot = -3.5 + (hovering ? 2 : 0);
+
+      // Idle bob — gentle continuous sway while the card is in view
+      // and the pointer isn't touching it (prevents it feeling static).
+      const bobY =
+        inView && !hovering && revealed ? Math.sin(now * 1.1) * 4 : 0;
+      const bobRot =
+        inView && !hovering && revealed ? Math.sin(now * 1.1 + 0.6) * 0.7 : 0;
+
+      // Exponential smoothing: faster while hovering for responsive
+      // tracking, slower for scroll drift so it feels weighty.
+      const k = hovering ? 0.16 : 0.07;
+      smoothTiltX += (targetTiltX - smoothTiltX) * k;
+      smoothTiltY += (targetTiltY - smoothTiltY) * k;
+      smoothScrollY += (targetScrollY - smoothScrollY) * 0.05;
+      smoothScrollRot += (targetScrollRot - smoothScrollRot) * 0.05;
+
+      // Transform is set directly — compositor-friendly, no conflicts.
+      card.style.transform =
+        "translate3d(6px, " +
+        smoothScrollY.toFixed(2) +
+        "px, 0) " +
+        "rotate(" +
+        (targetBaseRot + smoothScrollRot + bobRot).toFixed(2) +
+        "deg) " +
+        "rotateX(" +
+        smoothTiltX.toFixed(2) +
+        "deg) " +
+        "rotateY(" +
+        smoothTiltY.toFixed(2) +
+        "deg) " +
+        "translateY(" +
+        (targetLift + bobY).toFixed(2) +
+        "px) " +
+        "scale(" +
+        targetScale.toFixed(4) +
+        ")";
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    if (reduceMotion) {
+      // Static tilted card, no motion — but still visible.
+      card.style.transform = "translate3d(6px, 0, 0) rotate(-3.5deg)";
+      card.classList.add("is-entering");
+      return;
+    }
+
+    // Kick off the loop if the card is already in view (e.g. restored
+    // scroll position or the about section starts in the viewport).
+    if (card.getBoundingClientRect().top < window.innerHeight) {
+      startLoop();
+    } else {
+      // Set the initial transform so the card is properly tilted before
+      // it enters — no visible pop when the loop starts.
+      card.style.transform = "translate3d(6px, 0, 0) rotate(-3.5deg)";
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initLoadingScreen();
     initLenisSmoothScroll();
-    initSectionSnap();
     initTypingAnimation();
     initHeroAnimations();
     initHeroToAboutTransition();
@@ -42,20 +198,31 @@
     initFanCarousel();
     initAboutParallax();
     initAboutWordParallax();
-    initExperienceProgress();
     initTechstackTimeline();
+    initAboutCardMotion(); // Added for about-intro-card animations
   });
 
   // ============================================
   // TECHSTACK TIMELINE — activate steps on scroll
   // Uses IntersectionObserver to mark steps .active
-  // as they enter the viewport center.
+  // as they enter the viewport. On mobile the
+  // threshold is relaxed (entries are tall) so they
+  // always reveal. Adds a subtle scroll parallax so
+  // each entry body drifts at its own rate while
+  // scrolling past the viewport center.
   // ============================================
   function initTechstackTimeline() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var steps = document.querySelectorAll(".techstack-left .process-step");
+    var steps = document.querySelectorAll(".techstack-left .timeline-entry");
     if (!steps.length) return;
 
+    var isMobile = window.innerWidth <= 767;
+
+    // Activate timeline entries on scroll.
+    // Desktop: entries activate as they cross the viewport center.
+    // Mobile: entries are tall relative to the viewport, a strict
+    // threshold can leave them stuck faint/hidden — relax it so the
+    // reveal reliably fires as soon as the entry peeks in.
     var observer = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
@@ -64,9 +231,86 @@
           }
         });
       },
-      { threshold: 0.4, rootMargin: "-10% 0px -10% 0px" }
+      isMobile
+        ? { threshold: 0.05, rootMargin: "-5% 0px -15% 0px" }
+        : { threshold: 0.4, rootMargin: "-10% 0px -10% 0px" },
     );
-    steps.forEach(function (step) { observer.observe(step); });
+    steps.forEach(function (step) {
+      observer.observe(step);
+    });
+
+    // Animate the timeline fill line based on scroll progress
+    var lineFill = document.querySelector(".process-timeline-line-fill");
+    var timeline = document.querySelector(".techstack-left .process-timeline");
+    if (!lineFill || !timeline) return;
+
+    var ticking = false;
+
+    function updateLineFill() {
+      var rect = timeline.getBoundingClientRect();
+      var vh = window.innerHeight;
+      var totalTravel = rect.height;
+      // How far the top of the timeline has scrolled past the viewport top
+      var scrolled = vh - rect.top;
+      // Progress: 0 when timeline enters viewport, 1 when fully scrolled past
+      var progress = Math.max(0, Math.min(1, scrolled / totalTravel));
+      lineFill.style.height = (progress * 100).toFixed(2) + "%";
+
+      // ── Entry scroll parallax ──
+      // Each entry body drifts vertically at its own rate based on
+      // distance from the viewport center — layered, alive motion
+      // instead of a static list. Transform on the body keeps the
+      // badge pinned to the spine (compositor-friendly).
+      // Skip when the timeline is far off-screen to avoid layout reads.
+      if (rect.bottom > -vh && rect.top < vh * 2) {
+        for (var i = 0; i < steps.length; i++) {
+          var step = steps[i];
+          var sr = step.getBoundingClientRect();
+          var centerOffset = (sr.top + sr.height / 2 - vh / 2) / (vh / 2);
+          // Larger drift on desktop for a deeper effect; smaller on
+          // mobile so text stays readable on narrow screens.
+          var drift = centerOffset * (isMobile ? 22 : 34);
+          var body = step.querySelector(".timeline-entry-body");
+          if (body) {
+            body.style.transform = "translateY(" + drift.toFixed(2) + "px)";
+          }
+        }
+      }
+
+      ticking = false;
+    }
+
+    window.addEventListener(
+      "scroll",
+      function () {
+        if (!ticking) {
+          requestAnimationFrame(updateLineFill);
+          ticking = true;
+        }
+      },
+      { passive: true },
+    );
+
+    // Also listen on Lenis if available
+    if (window.__lenis) {
+      window.__lenis.on("scroll", function () {
+        if (!ticking) {
+          requestAnimationFrame(updateLineFill);
+          ticking = true;
+        }
+      });
+    }
+
+    // Refresh the mobile flag when the viewport crosses the breakpoint
+    window.addEventListener(
+      "resize",
+      function () {
+        isMobile = window.innerWidth <= 767;
+      },
+      { passive: true },
+    );
+
+    updateLineFill();
   }
 
   // ============================================
@@ -85,7 +329,7 @@
           fixedBg.classList.toggle("visible", entry.isIntersecting);
         });
       },
-      { threshold: 0, rootMargin: "0px" }
+      { threshold: 0, rootMargin: "0px" },
     );
     observer.observe(aboutSection);
   }
@@ -95,6 +339,7 @@
   // Each stacked word drifts at a different rate as
   // the About section scrolls, so they offset each
   // other horizontally. Uses rAF throttling + transform (GPU).
+  // Also adds blur when words are out of focus (not centered).
   // ============================================
   function initAboutWordParallax() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -108,34 +353,54 @@
     var speeds = [-0.18, 0.14, -0.18];
 
     var ticking = false;
-    var sectionTop = 0;
-    var sectionHeight = 0;
+    var isVisible = false;
 
-    function cacheGeometry() {
-      sectionTop = aboutSection.getBoundingClientRect().top + window.scrollY;
-      sectionHeight = aboutSection.offsetHeight;
-    }
-    cacheGeometry();
-    window.addEventListener("resize", cacheGeometry, { passive: true });
+    // IntersectionObserver: only run parallax when section is in view
+    var sectionObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          isVisible = entry.isIntersecting;
+        });
+      },
+      { threshold: 0, rootMargin: "0px" },
+    );
+    sectionObserver.observe(aboutSection);
 
     function update() {
+      if (!isVisible) {
+        ticking = false;
+        return;
+      }
+
       var y = window.scrollY || 0;
       var vh = window.innerHeight;
+      var sectionRect = aboutSection.getBoundingClientRect();
+      var sectionCenter = sectionRect.top + sectionRect.height / 2;
+      var viewportCenter = vh / 2;
 
-      // 0 = About section just entering, 1 = About fully scrolled past.
-      // Document-scroll progress works even while the sticky inner
-      // container is pinned to the viewport.
-      var progress = (y - sectionTop) / (Math.max(1, sectionHeight - vh));
-      progress = Math.max(-0.05, Math.min(1.05, progress));
+      // Distance from section center to viewport center (normalized)
+      var centerOffset = (sectionCenter - viewportCenter) / vh;
+      // 0 when perfectly centered, increases as section moves away
+      var focusAmount = Math.abs(centerOffset);
+      // Blur: 0px when centered, increases to max 6px when far out of view
+      var blurValue = Math.min(6, focusAmount * 8);
 
       words.forEach(function (word, i) {
         var group = word.parentElement;
         var speed = speeds[i % speeds.length];
-        var xOffset = progress * speed * vh;
+        var xOffset = centerOffset * speed * vh * 2;
 
         // Transform goes on the group so the inner word's hover
         // translateX and text-motion entrance still work.
         group.style.transform = "translateX(" + xOffset.toFixed(2) + "px)";
+
+        // Only apply parallax blur/opacity AFTER the text-motion
+        // entrance animation has played, otherwise we'd override
+        // the CSS entrance and the words would never appear.
+        if (word.classList.contains("text-motion-in")) {
+          word.style.filter = "blur(" + blurValue.toFixed(2) + "px)";
+          word.style.opacity = Math.max(0.3, 1 - focusAmount * 0.6).toFixed(3);
+        }
       });
 
       ticking = false;
@@ -149,7 +414,7 @@
           ticking = true;
         }
       },
-      { passive: true }
+      { passive: true },
     );
     update();
   }
@@ -165,27 +430,57 @@
     if (!expSection) return;
 
     var ticking = false;
+    var sectionTop = 0;
+
+    // Cache section geometry — reading getBoundingClientRect()
+    // inside the rAF loop forces a synchronous layout each frame.
+    function cacheGeometry() {
+      sectionTop = expSection.offsetTop;
+    }
+    cacheGeometry();
+    window.addEventListener("resize", cacheGeometry, { passive: true });
 
     function updateProgress() {
-      var rect = expSection.getBoundingClientRect();
+      var y =
+        (window.__lenis && typeof window.__lenis.scroll === "number"
+          ? window.__lenis.scroll
+          : window.scrollY) || 0;
       var vh = window.innerHeight;
-      // Start fading in when the top of Experience hits 80% of viewport
-      // Complete at 20% of viewport
-      var progress = 1 - (rect.top / (vh * 0.8));
+      // rect.top === sectionTop - y (document-space), computed
+      // from cached geometry — no layout read in the hot loop.
+      var progress = 1 - (sectionTop - y) / (vh * 0.8);
       progress = Math.max(0, Math.min(1, progress));
-      expSection.style.setProperty("--exp-progress", progress.toFixed(4));
+      var rounded = progress.toFixed(4);
+      if (expSection.dataset.expProgress === rounded) {
+        ticking = false;
+        return;
+      }
+      expSection.dataset.expProgress = rounded;
+      expSection.style.setProperty("--exp-progress", rounded);
       ticking = false;
     }
 
+    // Sync with Lenis exactly like the hero transition so the
+    // CSS variables update on the same frame Lenis paints.
+    if (window.__lenis) {
+      window.__lenis.on("scroll", function () {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(updateProgress);
+        }
+      });
+    }
+
+    // Fallback for when Lenis is unavailable
     window.addEventListener(
       "scroll",
       function () {
         if (!ticking) {
-          requestAnimationFrame(updateProgress);
           ticking = true;
+          requestAnimationFrame(updateProgress);
         }
       },
-      { passive: true }
+      { passive: true },
     );
     updateProgress();
   }
@@ -205,7 +500,7 @@
     if (!loadingScreen) return;
 
     var reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     var progress = 0;
@@ -305,15 +600,15 @@
   function initLenisSmoothScroll() {
     if (typeof Lenis === "undefined") return;
 
+    // lerp-based smoothing gives the scroll a natural inertial
+    // "float" instead of a duration-based snap-glide. 0.09 is a
+    // calm, buttery follow — the page trails the wheel gently.
     window.__lenis = new Lenis({
-      duration: 1.0,
-      easing: function (t) {
-        return 1 - Math.pow(1 - t, 4);
-      },
+      lerp: 0.09,
       orientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.0,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 0.9,
       infinite: false,
     });
 
@@ -321,8 +616,10 @@
       try {
         if (window.__lenis) window.__lenis.raf(time);
       } catch (err) {
+        // Never let a one-off raf error kill the loop — if this
+        // returns without rescheduling, Lenis freezes permanently
+        // and the page stops scrolling. Log and keep going.
         console.error("Lenis error:", err);
-        return;
       }
       requestAnimationFrame(raf);
     }
@@ -333,140 +630,14 @@
   }
 
   // ============================================
-  // SECTION SNAP — About + Tech Stack (centered)
-  // Scrolling DOWN toward #about or #techstack smoothly
-  // lands the section in the MIDDLE of the viewport, then
-  // releases so it never fights continued scrolling. Only
-  // these two sections snap: About is taller than the
-  // viewport, so it centers by its extra height; Tech Stack
-  // is shorter, so its top settles at 25% down the screen
-  // (its visual "center" in context). Scrolling back UP is
-  // completely free, and each section re-arms on the next
-  // descent from above it.
-  // ============================================
-  function initSectionSnap() {
-    if (!window.__lenis) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    var targets = ["about", "techstack"]
-      .map(function (id) {
-        var el = document.getElementById(id);
-        if (!el) return null;
-        return {
-          el: el,
-          top: el.offsetTop,
-          height: el.offsetHeight,
-          engaged: false,
-          animating: false,
-          stopTimer: null,
-        };
-      })
-      .filter(Boolean);
-    if (!targets.length) return;
-
-    var lastScroll = window.scrollY || 0;
-
-    function easeOutQuart(t) {
-      return 1 - Math.pow(1 - t, 4);
-    }
-
-    // Snap destination that centers the section in the viewport.
-    // Sections taller than the viewport center exactly; shorter
-    // ones settle their top at 25% down so they read as centered.
-    function snapOffset(t) {
-      var vh = window.innerHeight;
-      var room = t.height - vh;
-      if (room >= 0) return t.top + room / 2;
-      // Shorter sections: snap so the section's bottom sits at
-      // the bottom of the viewport — the section fills what fits
-      // and the area beyond is whatever comes next (no awkward
-      // gap between this section and the following one).
-      return Math.max(0, t.top + t.height - vh);
-    }
-
-    // Keep cached offsets accurate across resizes
-    window.addEventListener(
-      "resize",
-      function () {
-        targets.forEach(function (t) {
-          t.top = t.el.offsetTop;
-          t.height = t.el.offsetHeight;
-        });
-      },
-      { passive: true }
-    );
-
-    function endAnimation(t) {
-      t.animating = false;
-      // Re-sync so the next delta isn't computed from a
-      // stale pre-animation value (this caused re-snap loops).
-      lastScroll = window.scrollY || 0;
-    }
-
-    window.__lenis.on("scroll", function () {
-      var y = window.scrollY;
-      var delta = y - lastScroll;
-      lastScroll = y;
-
-      targets.forEach(function (t) {
-        if (t.animating) return;
-
-        // Re-arm a section whenever the user is back above it,
-        // so each descent from above snaps once. Upward scroll
-        // never snaps — it's always free.
-        if (delta <= 0) {
-          if (y < t.top) t.engaged = false;
-          return;
-        }
-
-        // Once snapped, never re-engage while scrolling through
-        // (or beyond) the section's content.
-        if (t.engaged) return;
-
-        var yNow = window.scrollY || 0;
-        var dest = snapOffset(t);
-        var vh = window.innerHeight;
-
-        // The section's top relative to the viewport
-        var sectionTopInView = t.top - yNow;
-
-        // Only snap when:
-        // 1. Not already at/past the destination
-        // 2. The section is approaching — its top is within the
-        //    bottom half of the viewport (or just below it) but
-        //    has not yet reached its centered snap position.
-        //    This prevents snapping from far above (e.g. hero).
-        var inApproachZone =
-          sectionTopInView > 0 &&
-          sectionTopInView < vh * 1.15 &&
-          yNow < dest;
-
-        if (yNow <= 0 || !inApproachZone || t.engaged) return;
-
-        t.engaged = true;
-        t.animating = true;
-        window.__lenis.scrollTo(dest, {
-          duration: 1.1,
-          easing: easeOutQuart,
-          lock: true,
-          onComplete: function () {
-            endAnimation(t);
-          },
-        });
-        // Fallback unlock in case onComplete never fires
-        setTimeout(function () {
-          endAnimation(t);
-        }, 1500);
-      });
-    });
-  }
-
-  // ============================================
   // HERO → ABOUT TRANSITION
   // As the hero scrolls away, its content drifts upward
-  // and softens (scale + blur + fade) while the About
-  // section begins to catch. Driven by --hero-progress
+  // and softens (scale + fade) while the About section
+  // begins to catch. Driven by --hero-progress
   // (0 = top of hero, 1 = About fully in view).
+  // Uses Lenis's virtual scroll value (not the native
+  // scroll event) so the transition stays perfectly in
+  // sync with the smooth scroll — no lag.
   // ============================================
   function initHeroToAboutTransition() {
     var hero = document.getElementById("home");
@@ -474,25 +645,56 @@
     if (!hero || !about) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    var aboutTop = about.offsetTop;
+    // Cache geometry — reading offsetTop inside the rAF loop
+    // forces a synchronous layout every frame (jank source).
+    function cacheGeometry() {
+      aboutTop = about.offsetTop;
+    }
+    window.addEventListener("resize", cacheGeometry, { passive: true });
+
     var ticking = false;
 
     function update() {
-      var aboutTop = about.offsetTop;
-      var y = window.scrollY || 0;
-      var progress = Math.max(0, Math.min(1, y / aboutTop));
-      hero.style.setProperty("--hero-progress", progress.toFixed(4));
+      var y =
+        (window.__lenis && typeof window.__lenis.scroll === "number"
+          ? window.__lenis.scroll
+          : window.scrollY) || 0;
+      var progress = aboutTop > 0 ? Math.max(0, Math.min(1, y / aboutTop)) : 0;
+      var rounded = progress.toFixed(4);
+      // Skip redundant writes — setting the same CSS var value
+      // every frame still triggers style recalc.
+      if (hero.dataset.heroProgress === rounded) {
+        ticking = false;
+        return;
+      }
+      hero.dataset.heroProgress = rounded;
+      hero.style.setProperty("--hero-progress", rounded);
       ticking = false;
     }
 
+    // Listen on Lenis's instance so the update fires on the
+    // exact frame Lenis animates — zero perceived lag between
+    // the wheel and the hero fade/blur.
+    if (window.__lenis) {
+      window.__lenis.on("scroll", function () {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      });
+    }
+
+    // Fallback for when Lenis is unavailable
     window.addEventListener(
       "scroll",
       function () {
         if (!ticking) {
-          requestAnimationFrame(update);
           ticking = true;
+          requestAnimationFrame(update);
         }
       },
-      { passive: true }
+      { passive: true },
     );
     update();
   }
@@ -505,14 +707,12 @@
   // ============================================
   function initTextMotion() {
     var reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
     if (reduceMotion) return;
 
     // About section elements — staggered wave entrance
-    var motionEls = document.querySelectorAll(
-      ".about-big-word, .about-bio"
-    );
+    var motionEls = document.querySelectorAll(".about-big-word");
     if (!motionEls.length) return;
 
     var aboutObserver = new IntersectionObserver(
@@ -527,7 +727,7 @@
           }
         });
       },
-      { threshold: 0.25, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.25, rootMargin: "0px 0px -40px 0px" },
     );
     motionEls.forEach(function (el) {
       el.classList.add("text-motion");
@@ -538,15 +738,19 @@
   function initTypingAnimation() {
     if (!typingEl) return;
 
-    let phraseIdx = 0,
+    var aboutTypingEl = document.getElementById("about-typing");
+
+    var phraseIdx = 0,
       charIdx = 0,
       typingForward = true;
 
     function tickTyping() {
-      const cur = PHRASES[phraseIdx];
+      var cur = PHRASES[phraseIdx];
 
       if (typingForward) {
-        typingEl.textContent = cur.slice(0, charIdx + 1);
+        var text = cur.slice(0, charIdx + 1);
+        if (typingEl) typingEl.textContent = text;
+        if (aboutTypingEl) aboutTypingEl.textContent = text;
         charIdx++;
 
         if (charIdx === cur.length) {
@@ -555,7 +759,9 @@
           return;
         }
       } else {
-        typingEl.textContent = cur.slice(0, charIdx - 1);
+        var text = cur.slice(0, charIdx - 1);
+        if (typingEl) typingEl.textContent = text;
+        if (aboutTypingEl) aboutTypingEl.textContent = text;
         charIdx--;
 
         if (charIdx === 0) {
@@ -572,7 +778,7 @@
 
   function initHeroAnimations() {
     const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     // If a loading screen is still covering the page, wait for it
@@ -656,7 +862,7 @@
   // Scroll reveal — lightweight IntersectionObserver
   function initScrollReveal() {
     const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     if (reduceMotion) {
@@ -703,10 +909,7 @@
 
     function shouldSkipHiding() {
       const navToggle = document.querySelector(".nav-toggle");
-      if (
-        navToggle &&
-        navToggle.getAttribute("aria-expanded") === "true"
-      ) {
+      if (navToggle && navToggle.getAttribute("aria-expanded") === "true") {
         return true;
       }
       return false;
@@ -752,7 +955,7 @@
       function () {
         requestAnimationFrame(updateHeader);
       },
-      { passive: true }
+      { passive: true },
     );
     updateHeader();
   }
@@ -785,7 +988,7 @@
 
         lastY = y;
       },
-      { passive: true }
+      { passive: true },
     );
   }
 
@@ -797,7 +1000,7 @@
     if (!header) return;
 
     var sections = Array.from(
-      document.querySelectorAll("section[data-header-theme]")
+      document.querySelectorAll("section[data-header-theme]"),
     );
     if (!sections.length) return;
 
@@ -836,9 +1039,13 @@
       }
     }
 
-    window.addEventListener("scroll", function () {
-      requestAnimationFrame(detect);
-    }, { passive: true });
+    window.addEventListener(
+      "scroll",
+      function () {
+        requestAnimationFrame(detect);
+      },
+      { passive: true },
+    );
     detect();
   })();
 
@@ -850,9 +1057,21 @@
     if (!grid) return;
 
     var mockups = {
-      ppa: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%230f172a"/><stop offset="100%" stop-color="%231e3a5f"/></linearGradient></defs><rect fill="url(%23g1)" width="800" height="500"/><rect x="40" y="40" width="720" height="50" rx="8" fill="%231e293b" opacity="0.8"/><circle cx="70" cy="65" r="6" fill="%23fbbf24"/><circle cx="90" cy="65" r="6" fill="%2334d399"/><circle cx="110" cy="65" r="6" fill="%23f87171"/><rect x="140" y="55" width="200" height="20" rx="4" fill="%23334155"/><rect x="40" y="110" width="260" height="350" rx="10" fill="%231e293b" opacity="0.6"/><rect x="55" y="125" width="230" height="14" rx="4" fill="%23334155"/><rect x="55" y="150" width="180" height="14" rx="4" fill="%23334155"/><rect x="55" y="180" width="210" height="14" rx="4" fill="%23334155"/><rect x="55" y="220" width="230" height="80" rx="6" fill="%230f172a" opacity="0.5"/><rect x="55" y="315" width="100" height="36" rx="18" fill="%23fbbf24" opacity="0.7"/><rect x="320" y="110" width="440" height="165" rx="10" fill="%231e293b" opacity="0.6"/><rect x="340" y="130" width="120" height="14" rx="4" fill="%23334155"/><rect x="340" y="155" width="100" height="50" rx="6" fill="%23fbbf24" opacity="0.25"/><rect x="460" y="155" width="100" height="50" rx="6" fill="%2334d399" opacity="0.25"/><rect x="320" y="295" width="440" height="165" rx="10" fill="%231e293b" opacity="0.6"/></svg>'),
-      dost: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%23064e3b"/><stop offset="100%" stop-color="%23065f46"/></linearGradient></defs><rect fill="url(%23g2)" width="800" height="500"/><rect x="40" y="40" width="720" height="50" rx="8" fill="%23064e3b" opacity="0.8"/><circle cx="70" cy="65" r="6" fill="%23fbbf24"/><circle cx="90" cy="65" r="6" fill="%2334d399"/><circle cx="110" cy="65" r="6" fill="%23f87171"/><rect x="40" y="110" width="300" height="350" rx="10" fill="%23064e3b" opacity="0.6"/><rect x="55" y="125" width="160" height="12" rx="3" fill="%23065f46"/><rect x="55" y="148" width="120" height="12" rx="3" fill="%23065f46"/><rect x="55" y="175" width="270" height="60" rx="6" fill="%2310b981" opacity="0.2"/><rect x="360" y="110" width="400" height="165" rx="10" fill="%23064e3b" opacity="0.6"/><rect x="380" y="130" width="140" height="12" rx="3" fill="%23065f46"/><rect x="380" y="155" width="360" height="100" rx="6" fill="%2310b981" opacity="0.12"/></svg>'),
-      ibdms: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%231e1b4b"/><stop offset="100%" stop-color="%23312e81"/></linearGradient></defs><rect fill="url(%23g3)" width="800" height="500"/><rect x="40" y="40" width="720" height="50" rx="8" fill="%231e1b4b" opacity="0.8"/><circle cx="70" cy="65" r="6" fill="%23fbbf24"/><circle cx="90" cy="65" r="6" fill="%2334d399"/><circle cx="110" cy="65" r="6" fill="%23f87171"/><rect x="40" y="110" width="220" height="350" rx="10" fill="%231e1b4b" opacity="0.6"/><rect x="55" y="125" width="120" height="12" rx="3" fill="%23312e81"/><rect x="55" y="150" width="190" height="32" rx="6" fill="%23818cf8" opacity="0.18"/><rect x="280" y="110" width="480" height="165" rx="10" fill="%231e1b4b" opacity="0.6"/><rect x="300" y="130" width="160" height="12" rx="3" fill="%23312e81"/><rect x="300" y="155" width="440" height="100" rx="6" fill="%23818cf8" opacity="0.1"/></svg>'),
+      ppa:
+        "data:image/svg+xml," +
+        encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%230f172a"/><stop offset="100%" stop-color="%231e3a5f"/></linearGradient></defs><rect fill="url(%23g1)" width="800" height="500"/><rect x="40" y="40" width="720" height="50" rx="8" fill="%231e293b" opacity="0.8"/><circle cx="70" cy="65" r="6" fill="%23fbbf24"/><circle cx="90" cy="65" r="6" fill="%2334d399"/><circle cx="110" cy="65" r="6" fill="%23f87171"/><rect x="140" y="55" width="200" height="20" rx="4" fill="%23334155"/><rect x="40" y="110" width="260" height="350" rx="10" fill="%231e293b" opacity="0.6"/><rect x="55" y="125" width="230" height="14" rx="4" fill="%23334155"/><rect x="55" y="150" width="180" height="14" rx="4" fill="%23334155"/><rect x="55" y="180" width="210" height="14" rx="4" fill="%23334155"/><rect x="55" y="220" width="230" height="80" rx="6" fill="%230f172a" opacity="0.5"/><rect x="55" y="315" width="100" height="36" rx="18" fill="%23fbbf24" opacity="0.7"/><rect x="320" y="110" width="440" height="165" rx="10" fill="%231e293b" opacity="0.6"/><rect x="340" y="130" width="120" height="14" rx="4" fill="%23334155"/><rect x="340" y="155" width="100" height="50" rx="6" fill="%23fbbf24" opacity="0.25"/><rect x="460" y="155" width="100" height="50" rx="6" fill="%2334d399" opacity="0.25"/><rect x="320" y="295" width="440" height="165" rx="10" fill="%231e293b" opacity="0.6"/></svg>',
+        ),
+      dost:
+        "data:image/svg+xml," +
+        encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%23064e3b"/><stop offset="100%" stop-color="%23065f46"/></linearGradient></defs><rect fill="url(%23g2)" width="800" height="500"/><rect x="40" y="40" width="720" height="50" rx="8" fill="%23064e3b" opacity="0.8"/><circle cx="70" cy="65" r="6" fill="%23fbbf24"/><circle cx="90" cy="65" r="6" fill="%2334d399"/><circle cx="110" cy="65" r="6" fill="%23f87171"/><rect x="40" y="110" width="300" height="350" rx="10" fill="%23064e3b" opacity="0.6"/><rect x="55" y="125" width="160" height="12" rx="3" fill="%23065f46"/><rect x="55" y="148" width="120" height="12" rx="3" fill="%23065f46"/><rect x="55" y="175" width="270" height="60" rx="6" fill="%2310b981" opacity="0.2"/><rect x="360" y="110" width="400" height="165" rx="10" fill="%23064e3b" opacity="0.6"/><rect x="380" y="130" width="140" height="12" rx="3" fill="%23065f46"/><rect x="380" y="155" width="360" height="100" rx="6" fill="%2310b981" opacity="0.12"/></svg>',
+        ),
+      ibdms:
+        "data:image/svg+xml," +
+        encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%231e1b4b"/><stop offset="100%" stop-color="%23312e81"/></linearGradient></defs><rect fill="url(%23g3)" width="800" height="500"/><rect x="40" y="40" width="720" height="50" rx="8" fill="%231e1b4b" opacity="0.8"/><circle cx="70" cy="65" r="6" fill="%23fbbf24"/><circle cx="90" cy="65" r="6" fill="%2334d399"/><circle cx="110" cy="65" r="6" fill="%23f87171"/><rect x="40" y="110" width="220" height="350" rx="10" fill="%231e1b4b" opacity="0.6"/><rect x="55" y="125" width="120" height="12" rx="3" fill="%23312e81"/><rect x="55" y="150" width="190" height="32" rx="6" fill="%23818cf8" opacity="0.18"/><rect x="280" y="110" width="480" height="165" rx="10" fill="%231e1b4b" opacity="0.6"/><rect x="300" y="130" width="160" height="12" rx="3" fill="%23312e81"/><rect x="300" y="155" width="440" height="100" rx="6" fill="%23818cf8" opacity="0.1"/></svg>',
+        ),
     };
 
     var projects = [
@@ -890,14 +1109,28 @@
       grid.innerHTML = filtered
         .map(function (p, i) {
           return (
-            '<div class="fan-card" style="--i:' + i + '">' +
-            '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy" />' +
+            '<div class="fan-card" style="--i:' +
+            i +
+            '">' +
+            '<img src="' +
+            p.image +
+            '" alt="' +
+            p.title +
+            '" loading="lazy" />' +
             '<div class="fan-card-overlay">' +
-            '<h3 class="fan-card-title">' + p.title + "</h3>" +
+            '<h3 class="fan-card-title">' +
+            p.title +
+            "</h3>" +
             '<div class="fan-card-tags">' +
-            p.tags.map(function (t) { return "<span>" + t + "</span>"; }).join("") +
+            p.tags
+              .map(function (t) {
+                return "<span>" + t + "</span>";
+              })
+              .join("") +
             "</div>" +
-            (p.badge ? '<span class="fan-card-badge">' + p.badge + "</span>" : "") +
+            (p.badge
+              ? '<span class="fan-card-badge">' + p.badge + "</span>"
+              : "") +
             "</div>" +
             "</div>"
           );
@@ -976,9 +1209,7 @@
     }
 
     function getPositionX(e) {
-      return e.type.includes("mouse")
-        ? e.pageX
-        : e.touches[0].clientX;
+      return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
     }
 
     track.addEventListener("mousemove", function (e) {
@@ -988,12 +1219,16 @@
       setSliderPosition();
     });
 
-    track.addEventListener("touchmove", function (e) {
-      if (!isDragging) return;
-      var dx = e.touches[0].clientX - startX;
-      currentTranslate = prevTranslate + dx;
-      setSliderPosition();
-    }, { passive: true });
+    track.addEventListener(
+      "touchmove",
+      function (e) {
+        if (!isDragging) return;
+        var dx = e.touches[0].clientX - startX;
+        currentTranslate = prevTranslate + dx;
+        setSliderPosition();
+      },
+      { passive: true },
+    );
   }
 
   /* ============================================
@@ -1003,37 +1238,222 @@
      in with translate + blur + opacity animation.
      ============================================ */
   (function initTechstackMotion() {
-    var heading = document.querySelector('.techstack-heading');
+    var heading = document.querySelector(".techstack-heading");
     if (!heading) return;
 
     // Split heading text into word spans
     var words = heading.textContent.trim().split(/\s+/);
-    heading.innerHTML = words.map(function (word, i) {
-      return '<span class="tw" style="--tw-i:' + i + '">' + word + '</span>';
-    }).join(' ');
+    heading.innerHTML = words
+      .map(function (word, i) {
+        return '<span class="tw" style="--tw-i:' + i + '">' + word + "</span>";
+      })
+      .join(" ");
 
     // IntersectionObserver: add .visible when section enters viewport
-    var techSection = document.querySelector('.techstack');
-    var techstackSub = document.querySelector('.techstack-sub');
-    var brandRibbon = document.querySelector('.tech-brand-ribbon');
+    var techSection = document.querySelector(".techstack");
+    var techstackSub = document.querySelector(".techstack-sub");
+    var brandRibbon = document.querySelector(".tech-brand-ribbon");
     if (!techSection) return;
 
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          // Heading words
-          heading.querySelectorAll('.tw').forEach(function (tw) {
-            tw.classList.add('visible');
-          });
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            // Heading words
+            heading.querySelectorAll(".tw").forEach(function (tw) {
+              tw.classList.add("visible");
+            });
 
-          // Sub text + brand ribbon
-          if (techstackSub) techstackSub.classList.add('visible');
-          if (brandRibbon) brandRibbon.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.15 });
+            // Sub text + brand ribbon
+            if (techstackSub) techstackSub.classList.add("visible");
+            if (brandRibbon) brandRibbon.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
 
     observer.observe(techSection);
   })();
-})();
 
+  /* ============================================
+     PROJECTS — Cursor Glow
+     A soft radial gradient follows the mouse inside
+     the pinned projects area for a premium feel.
+     ============================================ */
+  (function initCursorGlow() {
+    var glow = document.getElementById("cursor-glow");
+    var sticky = document.querySelector(".projects-sticky");
+    if (!glow || !sticky) return;
+
+    var mx = 0,
+      my = 0;
+    var gx = 0,
+      gy = 0;
+    var active = false;
+    var rafId = null;
+
+    sticky.addEventListener("mouseenter", function () {
+      active = true;
+      glow.classList.add("visible");
+    });
+
+    sticky.addEventListener("mouseleave", function () {
+      active = false;
+      glow.classList.remove("visible");
+    });
+
+    sticky.addEventListener("mousemove", function (e) {
+      var rect = sticky.getBoundingClientRect();
+      mx = e.clientX - rect.left;
+      my = e.clientY - rect.top;
+    });
+
+    function tick() {
+      // smooth lerp
+      gx += (mx - gx) * 0.08;
+      gy += (my - gy) * 0.08;
+      glow.style.transform =
+        "translate(" + (gx - 170) + "px," + (gy - 170) + "px)";
+      rafId = requestAnimationFrame(tick);
+    }
+
+    // always run the rAF loop (hidden element has no perf cost)
+    tick();
+  })();
+
+  /* ============================================
+     PROJECTS — 3D Magnetic Tilt on Fan Cards
+     Uses per-card rAF loop with lerp smoothing
+     to avoid fighting CSS hover transitions (no flutter).
+     ============================================ */
+  (function initMagneticCards() {
+    var grid = document.getElementById("projects-grid");
+    if (!grid) return;
+
+    var cards = [];
+    var mouseOver = false;
+    var globalMX = 0,
+      globalMY = 0;
+    var rafId = null;
+
+    function getBaseTransform(idx) {
+      if (idx === 0) return { tx: 20, ty: 0, rot: 6, scale: 1 };
+      if (idx === 1) return { tx: 0, ty: -12, rot: 0, scale: 1.06 };
+      if (idx === 2) return { tx: -20, ty: 0, rot: -6, scale: 1 };
+      return { tx: 0, ty: 0, rot: 0, scale: 1 };
+    }
+
+    function rebuildCards() {
+      var els = grid.querySelectorAll(".fan-card");
+      cards = [];
+      els.forEach(function (card, i) {
+        var base = getBaseTransform(i);
+        card.style.transform = "";
+        card.style.zIndex = "";
+        cards.push({
+          el: card,
+          idx: i,
+          base: base,
+          smoothRotX: 0,
+          smoothRotY: 0,
+          smoothScale: base.scale,
+          targetRotX: 0,
+          targetRotY: 0,
+          targetScale: base.scale,
+          hovering: false,
+        });
+      });
+    }
+
+    rebuildCards();
+
+    // Watch for filter re-renders
+    var mutObs = new MutationObserver(function () {
+      rebuildCards();
+    });
+    mutObs.observe(grid, { childList: true });
+
+    grid.addEventListener("mousemove", function (e) {
+      mouseOver = true;
+      globalMX = e.clientX;
+      globalMY = e.clientY;
+      cards.forEach(function (c) {
+        var rect = c.el.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var dx = (e.clientX - cx) / (rect.width / 2);
+        var dy = (e.clientY - cy) / (rect.height / 2);
+        c.targetRotY = dx * 14;
+        c.targetRotX = -dy * 10;
+        c.targetScale = c.base.scale + 0.06;
+        c.hovering = true;
+      });
+    });
+
+    grid.addEventListener("mouseleave", function () {
+      mouseOver = false;
+      cards.forEach(function (c) {
+        c.targetRotX = 0;
+        c.targetRotY = 0;
+        c.targetScale = c.base.scale;
+        c.hovering = false;
+      });
+    });
+
+    function tick() {
+      var needsFrame = false;
+      cards.forEach(function (c) {
+        var k = c.hovering ? 0.14 : 0.08;
+        var dx = c.targetRotX - c.smoothRotX;
+        var dy = c.targetRotY - c.smoothRotY;
+        var ds = c.targetScale - c.smoothScale;
+        // Snap when very close
+        if (Math.abs(dx) < 0.05) dx = 0;
+        else needsFrame = true;
+        if (Math.abs(dy) < 0.05) dy = 0;
+        else needsFrame = true;
+        if (Math.abs(ds) < 0.001) ds = 0;
+        else needsFrame = true;
+        c.smoothRotX += dx * k;
+        c.smoothRotY += dy * k;
+        c.smoothScale += ds * k;
+        var b = c.base;
+        c.el.style.transform =
+          "translate3d(" +
+          b.tx +
+          "px," +
+          b.ty +
+          "px,0) " +
+          "rotate(" +
+          b.rot +
+          "deg) " +
+          "perspective(700px) " +
+          "rotateX(" +
+          c.smoothRotX.toFixed(2) +
+          "deg) " +
+          "rotateY(" +
+          c.smoothRotY.toFixed(2) +
+          "deg) " +
+          "scale(" +
+          c.smoothScale.toFixed(4) +
+          ")";
+        if (c.hovering) {
+          c.el.style.zIndex = "10";
+          needsFrame = true;
+        } else {
+          c.el.style.zIndex = "";
+        }
+      });
+      if (needsFrame) rafId = requestAnimationFrame(tick);
+      else rafId = null;
+    }
+
+    function ensureLoop() {
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    }
+
+    grid.addEventListener("mousemove", ensureLoop);
+    grid.addEventListener("mouseleave", ensureLoop);
+  })();
+})();
