@@ -299,12 +299,68 @@
       </div>
     </section>
 
-    <!-- Tech Stack -->
+    <!-- Tech Stack + Process Timeline (pinned parallax) -->
     <section id="techstack" class="techstack" aria-label="Tech Stack" data-header-theme="dark" style="order: 2">
-      <div class="container techstack-container">
-        <div class="techstack-text">
+      <div class="techstack-split">
+        <!-- LEFT: scrolling process timeline -->
+        <div class="techstack-left">
+          <div class="process-timeline" aria-label="Process steps">
+            <div class="process-step" data-step="0">
+              <span class="process-step-number" aria-hidden="true">01</span>
+              <div class="process-step-body">
+                <h3 class="process-step-title">Discovery</h3>
+                <p class="process-step-text">
+                  Workshops, stakeholder interviews, and requirement mapping to
+                  define the problem and set clear goals before anything is built.
+                </p>
+              </div>
+            </div>
+
+            <div class="process-step" data-step="1">
+              <span class="process-step-number" aria-hidden="true">02</span>
+              <div class="process-step-body">
+                <h3 class="process-step-title">Concept & Design</h3>
+                <p class="process-step-text">
+                  Wireframes, UI/UX exploration, and system architecture that
+                  shape the product long before a line of code is written.
+                </p>
+              </div>
+            </div>
+
+            <div class="process-step" data-step="2">
+              <span class="process-step-number" aria-hidden="true">03</span>
+              <div class="process-step-body">
+                <h3 class="process-step-title">Development</h3>
+                <p class="process-step-text">
+                  Iterative builds with clean, testable code, continuous
+                  feedback, and regular demos so the work never drifts from the
+                  vision.
+                </p>
+              </div>
+            </div>
+
+            <div class="process-step" data-step="3">
+              <span class="process-step-number" aria-hidden="true">04</span>
+              <div class="process-step-body">
+                <h3 class="process-step-title">Launch & Support</h3>
+                <p class="process-step-text">
+                  Deployment, monitoring, and ongoing improvements keep the
+                  product fast, secure, and reliable long after it ships.
+                </p>
+              </div>
+            </div>
+
+            <!-- Vertical timeline line -->
+            <div class="process-timeline-line" aria-hidden="true">
+              <div class="process-timeline-line-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: pinned tech stack content -->
+        <div class="techstack-right" aria-label="Tech Stack details">
           <span class="section-eyebrow reveal">BUILT WITH</span>
-          <h2 class="techstack-heading reveal">A Modern, Production-Grade Stack</h2>
+          <h2 class="techstack-heading reveal">A Modern,<br>Production-Grade<br>Stack</h2>
           <p class="techstack-sub reveal">The same frameworks and infrastructure trusted by the best teams in tech, so your product launches fast, scales effortlessly, and never feels outdated.</p>
 
           <!-- Brand ticker — auto-scrolling horizontal ribbon -->
@@ -466,6 +522,7 @@
         </div>
       </div>
     </section>
+
 
     <!-- Contact / Let's Work Together -->
     <section id="contact" class="contact" aria-label="Contact" style="order: 6">

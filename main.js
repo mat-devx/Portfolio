@@ -29,7 +29,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     initLoadingScreen();
     initLenisSmoothScroll();
-    initLandingSnap();
+    initSectionSnap();
     initTypingAnimation();
     initHeroAnimations();
     initHeroToAboutTransition();
@@ -41,8 +41,33 @@
     initProjectsSection();
     initFanCarousel();
     initAboutParallax();
+    initAboutWordParallax();
     initExperienceProgress();
+    initTechstackTimeline();
   });
+
+  // ============================================
+  // TECHSTACK TIMELINE — activate steps on scroll
+  // Uses IntersectionObserver to mark steps .active
+  // as they enter the viewport center.
+  // ============================================
+  function initTechstackTimeline() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var steps = document.querySelectorAll(".techstack-left .process-step");
+    if (!steps.length) return;
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+          }
+        });
+      },
+      { threshold: 0.4, rootMargin: "-10% 0px -10% 0px" }
+    );
+    steps.forEach(function (step) { observer.observe(step); });
+  }
 
   // ============================================
   // ABOUT PARALLAX — fixed-bg visibility
@@ -63,6 +88,70 @@
       { threshold: 0, rootMargin: "0px" }
     );
     observer.observe(aboutSection);
+  }
+
+  // ============================================
+  // ABOUT WORD PARALLAX — DEFINE / DESIGN / DELIVER
+  // Each stacked word drifts at a different rate as
+  // the About section scrolls, so they offset each
+  // other horizontally. Uses rAF throttling + transform (GPU).
+  // ============================================
+  function initAboutWordParallax() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    var aboutSection = document.getElementById("about");
+    var words = document.querySelectorAll(".about-big-word");
+    if (!aboutSection || !words.length) return;
+
+    // Per-word drift multiplier — each word travels its own
+    // horizontal distance so the stack fans apart while scrolling.
+    var speeds = [-0.18, 0.14, -0.18];
+
+    var ticking = false;
+    var sectionTop = 0;
+    var sectionHeight = 0;
+
+    function cacheGeometry() {
+      sectionTop = aboutSection.getBoundingClientRect().top + window.scrollY;
+      sectionHeight = aboutSection.offsetHeight;
+    }
+    cacheGeometry();
+    window.addEventListener("resize", cacheGeometry, { passive: true });
+
+    function update() {
+      var y = window.scrollY || 0;
+      var vh = window.innerHeight;
+
+      // 0 = About section just entering, 1 = About fully scrolled past.
+      // Document-scroll progress works even while the sticky inner
+      // container is pinned to the viewport.
+      var progress = (y - sectionTop) / (Math.max(1, sectionHeight - vh));
+      progress = Math.max(-0.05, Math.min(1.05, progress));
+
+      words.forEach(function (word, i) {
+        var group = word.parentElement;
+        var speed = speeds[i % speeds.length];
+        var xOffset = progress * speed * vh;
+
+        // Transform goes on the group so the inner word's hover
+        // translateX and text-motion entrance still work.
+        group.style.transform = "translateX(" + xOffset.toFixed(2) + "px)";
+      });
+
+      ticking = false;
+    }
+
+    window.addEventListener(
+      "scroll",
+      function () {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+    update();
   }
 
   // ============================================
@@ -103,6 +192,11 @@
 
   // ============================================
   // LOADING SCREEN
+  // Deliberate speed-ramp: the bar crawls early, ramps
+  // up through the middle, then settles at 100%. On
+  // finish it plays a short celebration (cat pop + bar
+  // glow + content zoom) before the curtain lifts away
+  // and reveals the hero entrance animations.
   // ============================================
   function initLoadingScreen() {
     var loadingScreen = document.getElementById("loading-screen");
@@ -110,59 +204,99 @@
     var loadingBarFill = document.getElementById("loading-bar-fill");
     if (!loadingScreen) return;
 
+    var reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
     var progress = 0;
-    // ~2s total: tick every 40ms for a silky-smooth fill.
-    // Uses an ease-out curve so it accelerates early and eases
-    // into 100% right around the 2s mark.
-    var STEP_MS = 40;
-    var DURATION_MS = 2000;
-    var startedAt = Date.now();
+    var lastRendered = -1;
+    var finished = false;
+    // ~4s speed ramp — long enough to read, short enough to hold
+    // attention. Uses requestAnimationFrame so every subtle easing
+    // step lands on a real paint frame (no stutter).
+    var DURATION_MS = reduceMotion ? 900 : 4000;
+    var startedAt = performance.now();
+    var rafId = null;
+    var finishTimer = null;
 
-    function easeOutCubic(t) {
-      return 1 - Math.pow(1 - t, 3);
+    // Ease-in-out cubic: starts slow, ramps up through the middle,
+    // then eases gently into 100%.
+    function speedRamp(t) {
+      if (t < 0.5) return 4 * t * t * t;
+      return 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
 
-    function updateProgress() {
-      var elapsed = Date.now() - startedAt;
-      var t = Math.min(1, elapsed / DURATION_MS);
-      var eased = easeOutCubic(t);
-      // Small organic jitter (±1.5%) so the bar feels alive, never frozen
-      progress = Math.round(eased * 100 + (Math.random() * 1.5 - 0.75));
-      progress = Math.max(0, Math.min(100, progress));
-
-      if (loadingNumber) loadingNumber.textContent = progress + "%";
-      if (loadingBarFill) loadingBarFill.style.width = progress + "%";
-
-      if (t >= 1) {
-        clearInterval(interval);
-        // Gentle settle at 100%, then fade out
-        setTimeout(function () {
-          progress = 100;
-          if (loadingNumber) loadingNumber.textContent = "100%";
-          if (loadingBarFill) loadingBarFill.style.width = "100%";
-          loadingScreen.classList.add("hidden");
-          setTimeout(function () {
-            loadingScreen.style.display = "none";
-          }, 300);
-        }, 150);
-      }
+    function render(p) {
+      var rounded = Math.round(p);
+      // Monotonic — never re-render a lower value than what was
+      // already shown, so the bar can never visually stutter back.
+      if (rounded <= lastRendered) return;
+      lastRendered = rounded;
+      // Clamp the display value so 100 is the absolute cap.
+      var shown = Math.min(100, rounded);
+      if (loadingNumber) loadingNumber.textContent = shown + "%";
+      if (loadingBarFill) loadingBarFill.style.width = shown + "%";
     }
 
-    var interval = setInterval(updateProgress, STEP_MS);
+    function finishLoading() {
+      if (finished) return;
+      finished = true;
+      cancelAnimationFrame(rafId);
+      clearTimeout(finishTimer);
 
-    // Fallback: force-dismiss shortly after the 2s ramp completes
-    setTimeout(function () {
-      if (!loadingScreen.classList.contains("hidden")) {
-        clearInterval(interval);
-        progress = 100;
-        if (loadingNumber) loadingNumber.textContent = "100%";
-        if (loadingBarFill) loadingBarFill.style.width = "100%";
+      // Guarantee a clean 100% — jump straight there with no jitter.
+      render(101);
+      loadingScreen.classList.add("complete");
+
+      if (reduceMotion) {
+        // Skip the celebration — hide immediately and reveal the page.
         loadingScreen.classList.add("hidden");
         setTimeout(function () {
           loadingScreen.style.display = "none";
-        }, 300);
+          document.body.classList.add("hero-ready");
+        }, 250);
+        return;
       }
-    }, 2500);
+
+      // Let the finish animations play (cat pop, bar glow, content zoom),
+      // then lift the curtain away while hero entrance starts.
+      setTimeout(function () {
+        loadingScreen.classList.add("hidden");
+        document.body.classList.add("hero-ready");
+        setTimeout(function () {
+          loadingScreen.style.display = "none";
+        }, 900);
+      }, 1000);
+    }
+
+    function updateProgress(now) {
+      if (finished) return;
+      var elapsed = now - startedAt;
+      var t = Math.min(1, elapsed / DURATION_MS);
+      // Smooth eased progress — no random jitter near the end so
+      // the bar settles into 100% perfectly instead of oscillating.
+      var eased = speedRamp(t) * 100;
+      // Tiny organic wobble ONLY in the middle band (20%–85%),
+      // never near 0 or 100 where it would look like stuttering.
+      if (eased > 20 && eased < 85) {
+        eased += Math.sin(elapsed / 90) * 0.6;
+      }
+      progress = Math.max(progress, Math.min(100, eased));
+      render(progress);
+
+      if (t >= 1) {
+        finishLoading();
+        return;
+      }
+      rafId = requestAnimationFrame(updateProgress);
+    }
+
+    rafId = requestAnimationFrame(updateProgress);
+
+    // Fallback: force-finish shortly after the ramp completes
+    finishTimer = setTimeout(function () {
+      if (!finished) finishLoading();
+    }, DURATION_MS + 2200);
   }
 
   // ============================================
@@ -184,70 +318,146 @@
     });
 
     function raf(time) {
-      window.__lenis.raf(time);
+      try {
+        if (window.__lenis) window.__lenis.raf(time);
+      } catch (err) {
+        console.error("Lenis error:", err);
+        return;
+      }
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
 
-    window.__lenis.on("scroll", function () {
-      window.dispatchEvent(new Event("scroll"));
-    });
+    // Native scroll event dispatch removed — it caused infinite recursion
+    // on Windows/Chromium via Lenis scroll → dispatch → Lenis scroll loop.
   }
 
   // ============================================
-  // LANDING → ABOUT SNAP (one-way)
-  // Scrolling DOWN from the hero smoothly locks the
-  // page onto the top of the About section. Scrolling
-  // back UP is completely free — no forced lock pulls
-  // the user away while they return to the hero.
+  // SECTION SNAP — About + Tech Stack (centered)
+  // Scrolling DOWN toward #about or #techstack smoothly
+  // lands the section in the MIDDLE of the viewport, then
+  // releases so it never fights continued scrolling. Only
+  // these two sections snap: About is taller than the
+  // viewport, so it centers by its extra height; Tech Stack
+  // is shorter, so its top settles at 25% down the screen
+  // (its visual "center" in context). Scrolling back UP is
+  // completely free, and each section re-arms on the next
+  // descent from above it.
   // ============================================
-  function initLandingSnap() {
-    var about = document.getElementById("about");
-    if (!about || !window.__lenis) return;
+  function initSectionSnap() {
+    if (!window.__lenis) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    var stopTimer = null;
-    var animating = false;
-    var lastScroll = 0;
+    var targets = ["about", "techstack"]
+      .map(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return null;
+        return {
+          el: el,
+          top: el.offsetTop,
+          height: el.offsetHeight,
+          engaged: false,
+          animating: false,
+          stopTimer: null,
+        };
+      })
+      .filter(Boolean);
+    if (!targets.length) return;
+
+    var lastScroll = window.scrollY || 0;
 
     function easeOutQuart(t) {
       return 1 - Math.pow(1 - t, 4);
     }
 
-    window.__lenis.on("scroll", function () {
-      if (animating) return;
+    // Snap destination that centers the section in the viewport.
+    // Sections taller than the viewport center exactly; shorter
+    // ones settle their top at 25% down so they read as centered.
+    function snapOffset(t) {
+      var vh = window.innerHeight;
+      var room = t.height - vh;
+      if (room >= 0) return t.top + room / 2;
+      // Shorter sections: snap so the section's bottom sits at
+      // the bottom of the viewport — the section fills what fits
+      // and the area beyond is whatever comes next (no awkward
+      // gap between this section and the following one).
+      return Math.max(0, t.top + t.height - vh);
+    }
 
+    // Keep cached offsets accurate across resizes
+    window.addEventListener(
+      "resize",
+      function () {
+        targets.forEach(function (t) {
+          t.top = t.el.offsetTop;
+          t.height = t.el.offsetHeight;
+        });
+      },
+      { passive: true }
+    );
+
+    function endAnimation(t) {
+      t.animating = false;
+      // Re-sync so the next delta isn't computed from a
+      // stale pre-animation value (this caused re-snap loops).
+      lastScroll = window.scrollY || 0;
+    }
+
+    window.__lenis.on("scroll", function () {
       var y = window.scrollY;
       var delta = y - lastScroll;
       lastScroll = y;
 
-      // Only engage while scrolling DOWN, and never re-engage
-      // once the user has moved back up past the hero.
-      if (delta <= 0) return;
+      targets.forEach(function (t) {
+        if (t.animating) return;
 
-      clearTimeout(stopTimer);
-      stopTimer = setTimeout(function () {
-        var aboutTop = about.offsetTop;
-        var band = 160; // px past About's top we still snap into it
+        // Re-arm a section whenever the user is back above it,
+        // so each descent from above snaps once. Upward scroll
+        // never snaps — it's always free.
+        if (delta <= 0) {
+          if (y < t.top) t.engaged = false;
+          return;
+        }
 
-        // Snap only when stopped past the hero threshold but still
-        // near About — never force the user back once they're up.
-        if (y <= 0 || y > aboutTop + band) return;
+        // Once snapped, never re-engage while scrolling through
+        // (or beyond) the section's content.
+        if (t.engaged) return;
 
-        animating = true;
-        window.__lenis.scrollTo(aboutTop, {
+        var yNow = window.scrollY || 0;
+        var dest = snapOffset(t);
+        var vh = window.innerHeight;
+
+        // The section's top relative to the viewport
+        var sectionTopInView = t.top - yNow;
+
+        // Only snap when:
+        // 1. Not already at/past the destination
+        // 2. The section is approaching — its top is within the
+        //    bottom half of the viewport (or just below it) but
+        //    has not yet reached its centered snap position.
+        //    This prevents snapping from far above (e.g. hero).
+        var inApproachZone =
+          sectionTopInView > 0 &&
+          sectionTopInView < vh * 1.15 &&
+          yNow < dest;
+
+        if (yNow <= 0 || !inApproachZone || t.engaged) return;
+
+        t.engaged = true;
+        t.animating = true;
+        window.__lenis.scrollTo(dest, {
           duration: 1.1,
           easing: easeOutQuart,
           lock: true,
           onComplete: function () {
-            animating = false;
+            endAnimation(t);
           },
         });
         // Fallback unlock in case onComplete never fires
         setTimeout(function () {
-          animating = false;
+          endAnimation(t);
         }, 1500);
-      }, 120);
+      });
     });
   }
 
@@ -299,30 +509,29 @@
     ).matches;
     if (reduceMotion) return;
 
+    // About section elements — staggered wave entrance
     var motionEls = document.querySelectorAll(
       ".about-big-word, .about-bio"
     );
     if (!motionEls.length) return;
 
-    var observer = new IntersectionObserver(
+    var aboutObserver = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry, idx) {
           if (entry.isIntersecting) {
             var el = entry.target;
-            // Stagger a gentle wave across siblings
             var delay = Math.min(idx % 5, 4) * 90;
             el.style.transitionDelay = delay + "ms";
             el.classList.add("text-motion-in");
-            observer.unobserve(el);
+            aboutObserver.unobserve(el);
           }
         });
       },
       { threshold: 0.25, rootMargin: "0px 0px -40px 0px" }
     );
-
     motionEls.forEach(function (el) {
       el.classList.add("text-motion");
-      observer.observe(el);
+      aboutObserver.observe(el);
     });
   }
 
@@ -365,6 +574,15 @@
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+
+    // If a loading screen is still covering the page, wait for it
+    // to finish — initLoadingScreen() triggers the hero entrance
+    // as the curtain lifts so the animations line up with the reveal.
+    const loadingScreen = document.getElementById("loading-screen");
+    if (loadingScreen && !loadingScreen.classList.contains("hidden")) {
+      if (reduceMotion) document.body.classList.add("hero-ready");
+      return;
+    }
 
     if (reduceMotion) {
       document.body.classList.add("hero-ready");
@@ -714,6 +932,12 @@
     var track = carousel.querySelector(".fan-track");
     if (!track) return;
 
+    // Bind drag/swipe listeners once — renderProjects() re-invokes this
+    // after every filter re-render; without the guard the same listeners
+    // pile up on the track (memory + duplicate event handling).
+    if (track.dataset.fanInit === "1") return;
+    track.dataset.fanInit = "1";
+
     var isDragging = false;
     var startX = 0;
     var currentTranslate = 0;
@@ -790,6 +1014,8 @@
 
     // IntersectionObserver: add .visible when section enters viewport
     var techSection = document.querySelector('.techstack');
+    var techstackSub = document.querySelector('.techstack-sub');
+    var brandRibbon = document.querySelector('.tech-brand-ribbon');
     if (!techSection) return;
 
     var observer = new IntersectionObserver(function (entries) {
@@ -800,15 +1026,9 @@
             tw.classList.add('visible');
           });
 
-          // Sub text
-          if (document.querySelector('.techstack-sub')) {
-            document.querySelector('.techstack-sub').classList.add('visible');
-          }
-
-          // Brand ribbon
-          if (document.querySelector('.tech-brand-ribbon')) {
-            document.querySelector('.tech-brand-ribbon').classList.add('visible');
-          }
+          // Sub text + brand ribbon
+          if (techstackSub) techstackSub.classList.add('visible');
+          if (brandRibbon) brandRibbon.classList.add('visible');
         }
       });
     }, { threshold: 0.15 });
@@ -816,3 +1036,4 @@
     observer.observe(techSection);
   })();
 })();
+
