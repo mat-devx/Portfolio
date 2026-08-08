@@ -1,5 +1,12 @@
 # Portfolio Changes
 
+## Security Hardening (2026-08-08)
+
+- **Subresource Integrity (SRI) on CDN assets**: `integrity="sha384-…"` added to the Lenis script (`unpkg`) and Font Awesome CSS (`cdnjs`) in `index.html`. Hashes were computed over the exact bytes a browser receives (verified under `--compressed` fetch) so a compromised CDN can no longer inject code or styles undetected.
+- **Meta CSP fallback**: `index.html` now carries a `Content-Security-Policy` meta tag mirroring the `_headers` policy (minus `frame-ancestors`, which a meta tag can't express). The site is now protected even on hosts that ignore `_headers` and when served locally via `python3 -m http.server`. `index.html` has zero inline scripts, so `script-src` stays strict (`'self'` + unpkg).
+- **`Permissions-Policy`**: added `geolocation=(), microphone=(), camera=()` to `_headers` — the site uses none of these.
+- **Repo hygiene**: added `.gitignore` (`.DS_Store`, `Thumbs.db`) and untracked the previously committed `.DS_Store`.
+
 ## Launch Hardening (2026-08-07)
 
 - **Dead CSS removed**: ~430 lines cut from `style.css` — the entire old PROCESS block (`process-*`, `techstack-process`, `process-inline-grid*`), dead `.timeline-card`/`.timeline-header`/`.timeline-org`/`.timeline-date`/`.timeline-list` rules, `.define-hover`, `.hover-*`, and orphaned `.about-portrait-card` rules. Live techstack/experience timeline CSS untouched. Verified: brace-balanced, zero CSS diagnostics, all removed selectors confirmed dead (html:0, js:0).

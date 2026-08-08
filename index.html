@@ -3,6 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      Defense-in-depth CSP. Mirrors the policy in `_headers` (minus
+      frame-ancestors, which a meta tag cannot express) so the site is
+      protected even on hosts that ignore `_headers` or when served
+      locally. Inline styles are required by the scroll-driven effects.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    />
     <title>Mathew Valiente — Software Engineer</title>
     <meta
       name="description"
@@ -24,6 +34,7 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha384-blOohCVdhjmtROpu8+CfTnUWham9nkX7P7OZQMst+RUnhtoY/9qemFAkIKOYxDI3"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
@@ -715,7 +726,11 @@
     </div>
 
     <!-- Lenis Smooth Scroll -->
-    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script
+      src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"
+      integrity="sha384-tKsJDT6PlUI0pSBt9/sBKJluKgA19/a6mBrDsZaXotLB4ZYfMGM6xt6/WgGpYhTm"
+      crossorigin="anonymous"
+    ></script>
     <script src="main.js" defer></script>
   </body>
 </html>
